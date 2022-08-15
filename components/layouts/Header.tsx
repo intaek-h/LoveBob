@@ -21,19 +21,17 @@ const Header = () => {
       refetchInterval: FIVE_MINUTES,
     },
   });
-  const { data, isSuccess } = useQuery("key", () => axios.get("/api/users"), {
+  const { data, isSuccess: isUserDataReady } = useQuery("key", () => axios.get("/api/users"), {
     enabled: !!session,
     staleTime: THREE_HOURS,
     refetchInterval: FIVE_MINUTES,
   });
 
-  if (isSuccess)
+  if (isUserDataReady)
     return (
       <Container>
         <Image src={logo} alt="logo" onClick={() => router.push("/")} />
-        <ProfileIcon
-          onClick={() => router.push(`/users/${data.data.result.id}`)}
-        />
+        <ProfileIcon onClick={() => router.push(`/users/${data.data.result.id}`)} />
       </Container>
     );
 
@@ -48,9 +46,7 @@ const Header = () => {
   return (
     <Container>
       <Image src={logo} alt="logo" onClick={() => router.push("/")} />
-      <LoginButton onClick={() => signIn("google")}>
-        가입 또는 로그인
-      </LoginButton>
+      <LoginButton onClick={() => signIn("google")}>가입 또는 로그인</LoginButton>
     </Container>
   );
 };
