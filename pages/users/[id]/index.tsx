@@ -1,15 +1,44 @@
-import { GetServerSideProps, NextPage } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import prisma from "../../../lib/prisma";
 
-export const getServerSideProps: GetServerSideProps = async () => {
+type Params = {
+  id: string;
+};
+
+export const getServerSideProps = async (context: GetServerSidePropsContext<Params>) => {
+  const param = context.params?.id;
+
+  const user = await prisma.user.findFirst({
+    where: {
+      id: param,
+    },
+    include: {
+      Posts: true,
+      VisitedRestaurants: {
+        where: {
+          userId: param,
+        },
+        include: {
+          restaurant: true,
+        },
+      },
+    },
+  });
+
   return {
-    props: {},
+    props: { user },
   };
 };
 
-const UserPage: NextPage = () => {
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const UserPage = ({ user }: ServerSideProps) => {
+  if (!user) return <div>Not Found</div>;
+
   return (
     <div>
-      <span>hi</span>
+      <span>{user?.id}</span>
+      <span>{user?.email}</span>
     </div>
   );
 };

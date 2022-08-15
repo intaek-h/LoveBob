@@ -13,10 +13,7 @@ type Data = {
   image?: string;
 };
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const session = await unstable_getServerSession(req, res, authOptions);
 
@@ -24,7 +21,7 @@ export default async function handler(
 
     const user = await prisma.user.findFirst({
       where: {
-        email: session.user?.email,
+        email: session.user!.email!,
       },
     });
 
