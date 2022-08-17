@@ -1,7 +1,6 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
 import prisma from "../../../lib/prisma";
 
 export const authOptions: NextAuthOptions = {
@@ -14,6 +13,12 @@ export const authOptions: NextAuthOptions = {
   ],
   session: {
     maxAge: 30 * 24 * 60 * 60, // 30 days,
+  },
+  callbacks: {
+    async session({ session, user }) {
+      session.userId = user.id;
+      return session;
+    },
   },
   secret: process.env.NEXTAUTH_SECRET,
 };

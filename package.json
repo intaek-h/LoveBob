@@ -11,12 +11,15 @@
   "dependencies": {
     "@next-auth/prisma-adapter": "^1.0.4",
     "@prisma/client": "^4.2.1",
+    "aws-sdk": "^2.1196.0",
     "axios": "^0.27.2",
     "next": "12.2.5",
     "next-auth": "^4.10.3",
     "polished": "^4.2.2",
     "react": "18.2.0",
+    "react-advanced-cropper": "^0.10.4",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.34.2",
     "react-query": "^3.39.2",
     "styled-components": "^5.3.5",
     "styled-normalize": "^8.0.7"

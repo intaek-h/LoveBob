@@ -19,6 +19,9 @@ type Session = {
   };
 };
 
+export const SESSION_STALE_TIME = 60 * 1000 * 60 * 3; // 3 hours
+export const SESSION_REFETCH_INTERVAL = 60 * 1000 * 3; // 5 minutes
+
 export async function fetchSession() {
   const res = await fetch("/api/auth/session");
   const session = await res.json();
@@ -36,6 +39,8 @@ export function useSession({
   const router = useRouter();
   const query = useQuery(["session"], fetchSession, {
     ...queryConfig,
+    staleTime: SESSION_STALE_TIME,
+    refetchInterval: SESSION_REFETCH_INTERVAL,
     onSettled(data, error) {
       if (queryConfig.onSettled) queryConfig.onSettled(data, error);
       if (data || !required) return;

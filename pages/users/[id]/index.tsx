@@ -1,4 +1,6 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import styled from "styled-components";
+import ProfileContainer from "../../../containers/profile/ProfileContainer";
 import prisma from "../../../lib/prisma";
 
 type Params = {
@@ -25,22 +27,31 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     },
   });
 
+  const props = {
+    profile: {
+      name: user?.name,
+      title: user?.title,
+      description: user?.description,
+      visits: user?.VisitedRestaurants.length,
+      posts: user?.Posts.length,
+    },
+  };
+
   return {
-    props: { user },
+    props,
   };
 };
 
-type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+export type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const UserPage = ({ user }: ServerSideProps) => {
-  if (!user) return <div>Not Found</div>;
-
+const UserPage = ({ profile }: ServerSideProps) => {
   return (
-    <div>
-      <span>{user?.id}</span>
-      <span>{user?.email}</span>
-    </div>
+    <Container>
+      <ProfileContainer {...profile} />
+    </Container>
   );
 };
+
+const Container = styled.div``;
 
 export default UserPage;
