@@ -50,6 +50,7 @@ const Container = styled.div`
   justify-content: space-between;
   height: 60px;
   padding: 15px 20px;
+  margin-bottom: 40px;
 `;
 
 const LoginButton = styled.button`

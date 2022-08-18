@@ -124,7 +124,7 @@ const Body = styled.div`
 
 const Header = styled.div`
   display: block;
-  font-weight: 500;
+  font-weight: bold;
   font-size: 1.2rem;
   padding: 20px;
 `;

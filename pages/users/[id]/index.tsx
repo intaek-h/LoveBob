@@ -30,11 +30,14 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
   const props = {
     profile: {
       name: user?.name,
+      image: user?.image,
       title: user?.title,
       description: user?.description,
       visits: user?.VisitedRestaurants.length,
       posts: user?.Posts.length,
     },
+    visitedRestaurants: user?.VisitedRestaurants,
+    posts: user?.Posts,
   };
 
   return {
@@ -44,14 +47,39 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
 
 export type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const UserPage = ({ profile }: ServerSideProps) => {
+const UserPage = ({ profile, visitedRestaurants }: ServerSideProps) => {
   return (
-    <Container>
-      <ProfileContainer {...profile} />
-    </Container>
+    <Body>
+      <LeftContainer>
+        <ProfileContainer {...profile} />
+        <Line margin={40} />
+      </LeftContainer>
+      <RightContainer></RightContainer>
+    </Body>
   );
 };
 
-const Container = styled.div``;
+interface LineProps {
+  margin?: number;
+}
+
+const Body = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const LeftContainer = styled.div`
+  width: 700px;
+`;
+
+const RightContainer = styled.div`
+  width: 500px;
+`;
+
+const Line = styled.div<LineProps>`
+  width: 100%;
+  border-bottom: 1px solid ${({ theme }) => theme.element.bg_placeholder};
+  margin: ${(props) => props.margin || 0}px 0;
+`;
 
 export default UserPage;
