@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id                 String               @id @default(cuid())
+  name               String
+  nickname           String?              @unique
+  email              String               @unique
+  emailVerified      DateTime?
+  image              String?              @db.VarChar(500)
+  title              String?
+  description        String?              @db.VarChar(500)
+  accounts           Account[]
+  sessions           Session[]
+  VisitedRestaurants VisitedRestaurants[]
+  Posts              Posts[]
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Bob
+model Restaurants {
+  id        String               @id @db.VarChar(50)
+  poi_nm    String               @db.VarChar(100)
+  branch_nm String?              @db.VarChar(100)
+  sub_nm    String?              @db.VarChar(100)
+  mcate_cd  String?              @db.VarChar(30)
+  mcate_nm  String?              @db.VarChar(200)
+  pnu       String?              @db.VarChar(30)
+  sido_nm   String?              @db.VarChar(100)
+  sgg_nm    String?              @db.VarChar(100)
+  bemd_nm   String?              @db.VarChar(100)
+  ri_nm     String?              @db.VarChar(100)
+  beonji    String?              @db.VarChar(20)
+  badm_cd   String?              @db.VarChar(30)
+  hadm_cd   String?              @db.VarChar(30)
+  rd_cd     String?              @db.VarChar(30)
+  rd_nm     String?              @db.VarChar(100)
+  bld_num   String?              @db.VarChar(30)
+  grid_cd   String?              @db.VarChar(30)
+  origin    String?              @db.VarChar(200)
+  base_ymd  String?              @db.VarChar(20)
+  loc       Unsupported("point")
+
+  Posts              Posts[]
+  VisitedRestaurants VisitedRestaurants[]
+
+  @@index(loc, map: "loc")
+}
+
+model VisitedRestaurants {
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  restaurant    Restaurants @relation(fields: [restaurantsId], references: [id])
+  userId        String
+  restaurantsId String      @db.VarChar(50)
+
+  @@id([userId, restaurantsId])
+}
+
+model Posts {
+  user          User        @relation(fields: [userId], references: [id])
+  restaurant    Restaurants @relation(fields: [restaurantsId], references: [id])
+  id            String      @unique @default(cuid())
+  userId        String
+  restaurantsId String      @db.VarChar(50)
+  title         String
+  content       String      @db.Text
+  image1        String      @db.VarChar(255)
+  image2        String      @db.VarChar(255)
+  image3        String      @db.VarChar(255)
+  image4        String      @db.VarChar(255)
+  image5        String      @db.VarChar(255)
+
+  @@id([userId, restaurantsId])
+}
