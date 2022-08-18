@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import Image from "next/image";
 import styled from "styled-components";
 import { lighten } from "polished";
@@ -7,27 +7,20 @@ import { useQuery } from "react-query";
 import axios from "axios";
 
 import logo from "../../assets/icons/bob-logo.svg";
-import { useSession } from "../../lib/sessionCache";
-
-const THREE_HOURS = 60 * 1000 * 60 * 3;
-const FIVE_MINUTES = 60 * 1000 * 3;
+import { SESSION_REFETCH_INTERVAL, SESSION_STALE_TIME, useSession } from "../../hooks/useSession";
 
 const Header = () => {
   const router = useRouter();
 
-  const [session] = useSession({
-    queryConfig: {
-      staleTime: THREE_HOURS,
-      refetchInterval: FIVE_MINUTES,
-    },
-  });
-  const { data, isSuccess: isUserDataReady } = useQuery("key", () => axios.get("/api/users"), {
+  const [session] = useSession();
+
+  const { data } = useQuery("key", () => axios.get("/api/users"), {
     enabled: !!session,
-    staleTime: THREE_HOURS,
-    refetchInterval: FIVE_MINUTES,
+    staleTime: SESSION_STALE_TIME,
+    refetchInterval: SESSION_REFETCH_INTERVAL,
   });
 
-  if (isUserDataReady)
+  if (data?.data.success)
     return (
       <Container>
         <Image src={logo} alt="logo" onClick={() => router.push("/")} />
@@ -57,6 +50,7 @@ const Container = styled.div`
   justify-content: space-between;
   height: 60px;
   padding: 15px 20px;
+  margin-bottom: 40px;
 `;
 
 const LoginButton = styled.button`
