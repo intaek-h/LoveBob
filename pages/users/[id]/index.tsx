@@ -26,7 +26,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
       },
     },
   });
-
+  
   const props = {
     profile: {
       name: user?.name,
