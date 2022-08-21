@@ -1,7 +1,13 @@
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { unstable_getServerSession } from "next-auth";
 import styled from "styled-components";
+import CustomizedAccordions from "../../../components/accordion";
+import NearbySearch from "../../../components/search/NearbySearch";
+import NearbySearchContainer from "../../../components/search/NearbySearchContainer";
+import MapChartContainer from "../../../containers/mapChart/MapChartContainer";
 import ProfileContainer from "../../../containers/profile/ProfileContainer";
 import prisma from "../../../lib/prisma";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 type Params = {
   id: string;
@@ -9,6 +15,8 @@ type Params = {
 
 export const getServerSideProps = async (context: GetServerSidePropsContext<Params>) => {
   const param = context.params?.id;
+
+  const session = await unstable_getServerSession(context.req, context.res, authOptions);
 
   const user = await prisma.user.findFirst({
     where: {
@@ -26,9 +34,11 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
       },
     },
   });
-  
+
   const props = {
     profile: {
+      isOwner: user?.id === session?.userId,
+      id: user?.id,
       name: user?.name,
       image: user?.image,
       title: user?.title,
@@ -53,8 +63,13 @@ const UserPage = ({ profile, visitedRestaurants }: ServerSideProps) => {
       <LeftContainer>
         <ProfileContainer {...profile} />
         <Line margin={40} />
+        <CustomizedAccordions>
+          <NearbySearchContainer />
+        </CustomizedAccordions>
       </LeftContainer>
-      <RightContainer></RightContainer>
+      <RightContainer>
+        <MapChartContainer />
+      </RightContainer>
     </Body>
   );
 };
@@ -65,7 +80,7 @@ interface LineProps {
 
 const Body = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
 `;
 
 const LeftContainer = styled.div`
