@@ -66,7 +66,7 @@ const NearbySearch = ({ coords, setCoords, setRestaurants }: Props) => {
 
   return (
     <div>
-      <form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit}>
         <Input
           type="text"
           name="address"
@@ -74,7 +74,8 @@ const NearbySearch = ({ coords, setCoords, setRestaurants }: Props) => {
           onChange={handleInputChange}
           placeholder="도로명 주소를 입력하세요"
         />
-      </form>
+        <SearchButton>검색</SearchButton>
+      </Form>
       <ResultContainer>
         {results &&
           results.map((result, i) => (
@@ -94,12 +95,21 @@ interface AddressProp {
   selected?: boolean;
 }
 
+const Form = styled.form`
+  display: flex;
+  justify-content: space-between;
+`;
+
 const Input = styled.input`
   font-size: 0.95rem;
-  width: 100%;
+  width: 90%;
   padding: 10px;
   border: 1px solid ${({ theme }) => theme.element.bg_placeholder};
   border-radius: 4px;
+`;
+
+const SearchButton = styled.button`
+  width: 50px;
 `;
 
 const ResultContainer = styled.div`

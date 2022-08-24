@@ -6,6 +6,7 @@ import NearbySearch from "../../../components/search/NearbySearch";
 import NearbySearchContainer from "../../../components/search/NearbySearchContainer";
 import MapChartContainer from "../../../containers/mapChart/MapChartContainer";
 import ProfileContainer from "../../../containers/profile/ProfileContainer";
+import VisitedRestaurantsContainer from "../../../containers/visitedRestaurants/visitedRestaurantsContainer";
 import prisma from "../../../lib/prisma";
 import { authOptions } from "../../api/auth/[...nextauth]";
 
@@ -14,26 +15,30 @@ type Params = {
 };
 
 export const getServerSideProps = async (context: GetServerSidePropsContext<Params>) => {
-  const param = context.params?.id;
+  const userId = context.params?.id;
 
   const session = await unstable_getServerSession(context.req, context.res, authOptions);
 
   const user = await prisma.user.findFirst({
     where: {
-      id: param,
+      id: userId,
     },
     include: {
       Posts: true,
       VisitedRestaurants: {
-        where: {
-          userId: param,
-        },
         include: {
           restaurant: true,
         },
       },
     },
   });
+
+  const filteredVisitedRestaurants = user?.VisitedRestaurants.map((record) => ({
+    name: `${record.restaurant.poi_nm} ${record.restaurant.branch_nm} ${record.restaurant.sub_nm}`,
+    city: `${record.restaurant.sido_nm} ${record.restaurant.sgg_nm}`,
+    roadAddress: `${record.restaurant.rd_nm} ${record.restaurant.bld_num}`,
+    category: record.restaurant.mcate_nm,
+  }));
 
   const props = {
     profile: {
@@ -46,7 +51,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
       visits: user?.VisitedRestaurants.length,
       posts: user?.Posts.length,
     },
-    visitedRestaurants: user?.VisitedRestaurants,
+    visitedRestaurants: filteredVisitedRestaurants,
     posts: user?.Posts,
   };
 
@@ -69,6 +74,7 @@ const UserPage = ({ profile, visitedRestaurants }: ServerSideProps) => {
       </LeftContainer>
       <RightContainer>
         <MapChartContainer />
+        <VisitedRestaurantsContainer restaurants={visitedRestaurants} userName={profile.name} />
       </RightContainer>
     </Body>
   );
