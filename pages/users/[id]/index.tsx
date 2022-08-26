@@ -18,6 +18,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
 
   const session = await unstable_getServerSession(context.req, context.res, authOptions);
 
+  const session = await unstable_getServerSession(context.req, context.res, authOptions);
+
   const user = await prisma.user.findFirst({
     where: {
       id: userId,
@@ -53,7 +55,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     category: record.restaurant.mcate_nm,
     posts: record.restaurant._count.Posts,
   }));
-
+  
   const props = {
     profile: {
       isOwner: user?.id === session?.userId,
