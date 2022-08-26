@@ -1,6 +1,6 @@
 import { useState } from "react";
-import NearbyRestaurants, { Restaurant } from "./NearbyRestaurants";
-import NearbySearch from "./NearbySearch";
+import NearbyRestaurants, { Restaurant } from "../../components/search/NearbyRestaurants";
+import NearbySearch from "../../components/search/NearbySearch";
 
 export interface Coords {
   address: string;

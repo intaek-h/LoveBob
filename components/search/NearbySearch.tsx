@@ -3,7 +3,7 @@ import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "reac
 import styled from "styled-components";
 import ApiService from "../../services/Api";
 import { Restaurant } from "./NearbyRestaurants";
-import { Coords } from "./NearbySearchContainer";
+import { Coords } from "../../containers/nearbySearch/NearbySearchContainer";
 
 interface Props {
   coords: Coords | undefined;
@@ -104,7 +104,7 @@ const Input = styled.input`
   font-size: 0.95rem;
   width: 90%;
   padding: 10px;
-  border: 1px solid ${({ theme }) => theme.element.bg_placeholder};
+  border: 1px solid ${({ theme }) => theme.element.monochrome_2};
   border-radius: 4px;
 `;
 
@@ -144,7 +144,7 @@ const NextButton = styled.button`
   cursor: pointer;
 
   :disabled {
-    background-color: ${({ theme }) => theme.element.bg_placeholder};
+    background-color: ${({ theme }) => theme.element.placeholder};
   }
 `;
 

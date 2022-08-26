@@ -72,7 +72,7 @@ const ProfileIcon = styled.button`
   padding: 0;
   width: 32px;
   height: 32px;
-  background-color: ${({ theme }) => theme.element.bg_placeholder};
+  background-color: ${({ theme }) => theme.element.placeholder};
   border-radius: 50%;
   cursor: pointer;
 `;

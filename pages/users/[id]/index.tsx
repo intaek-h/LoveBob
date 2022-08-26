@@ -2,8 +2,7 @@ import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { unstable_getServerSession } from "next-auth";
 import styled from "styled-components";
 import CustomizedAccordions from "../../../components/accordion";
-import NearbySearch from "../../../components/search/NearbySearch";
-import NearbySearchContainer from "../../../components/search/NearbySearchContainer";
+import NearbySearchContainer from "../../../containers/nearbySearch/NearbySearchContainer";
 import MapChartContainer from "../../../containers/mapChart/MapChartContainer";
 import ProfileContainer from "../../../containers/profile/ProfileContainer";
 import VisitedRestaurantsContainer from "../../../containers/visitedRestaurants/visitedRestaurantsContainer";
@@ -27,7 +26,21 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
       Posts: true,
       VisitedRestaurants: {
         include: {
-          restaurant: true,
+          restaurant: {
+            select: {
+              _count: {
+                select: { Posts: true },
+              },
+              poi_nm: true,
+              branch_nm: true,
+              sub_nm: true,
+              sido_nm: true,
+              sgg_nm: true,
+              rd_nm: true,
+              bld_num: true,
+              mcate_nm: true,
+            },
+          },
         },
       },
     },
@@ -38,6 +51,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     city: `${record.restaurant.sido_nm} ${record.restaurant.sgg_nm}`,
     roadAddress: `${record.restaurant.rd_nm} ${record.restaurant.bld_num}`,
     category: record.restaurant.mcate_nm,
+    posts: record.restaurant._count.Posts,
   }));
 
   const props = {
@@ -99,7 +113,7 @@ const RightContainer = styled.div`
 
 const Line = styled.div<LineProps>`
   width: 100%;
-  border-bottom: 1px solid ${({ theme }) => theme.element.bg_placeholder};
+  border-bottom: 1px solid ${({ theme }) => theme.element.placeholder};
   margin: ${(props) => props.margin || 0}px 0;
 `;
 
