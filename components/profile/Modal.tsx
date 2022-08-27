@@ -140,7 +140,7 @@ const ImageContainer = styled.div`
 
 const Line = styled.div`
   height: 100%;
-  border-left: 1px solid ${({ theme }) => theme.element.bg_placeholder};
+  border-left: 1px solid ${({ theme }) => theme.element.monochrome_2};
 `;
 
 const FormContainer = styled.div`
@@ -166,7 +166,7 @@ const InputContainer = styled.div`
     font-size: 0.95rem;
     width: 100%;
     padding: 10px;
-    border: 1px solid ${({ theme }) => theme.element.bg_placeholder};
+    border: 1px solid ${({ theme }) => theme.element.monochrome_2};
     border-radius: 4px;
   }
 
@@ -193,7 +193,7 @@ const SaveButton = styled.button`
   color: #fff;
 
   :disabled {
-    background-color: ${({ theme }) => theme.element.bg_placeholder};
+    background-color: ${({ theme }) => theme.element.placeholder};
   }
 `;
 
@@ -212,7 +212,7 @@ const CloseButton = styled.button`
   cursor: pointer;
 
   :hover {
-    background-color: ${({ theme }) => theme.element.bg_placeholder};
+    background-color: ${({ theme }) => theme.element.placeholder};
   }
 `;
 

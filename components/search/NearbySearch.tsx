@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import styled from "styled-components";
 import ApiService from "../../services/Api";

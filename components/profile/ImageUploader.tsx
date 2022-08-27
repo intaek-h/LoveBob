@@ -151,7 +151,7 @@ const Button = styled.button`
   cursor: pointer;
 
   :disabled {
-    background-color: ${({ theme }) => theme.element.bg_placeholder};
+    background-color: ${({ theme }) => theme.element.placeholder};
   }
 `;
 

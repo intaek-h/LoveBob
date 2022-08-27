@@ -1,10 +1,11 @@
+import "../public/editorStyles.css";
 import type { AppProps } from "next/app";
 import Layout from "../components/layouts";
 import { QueryClientProvider, QueryClient } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import { ThemeProvider } from "styled-components";
 import GlobalStyle from "../components/styles/globalStyles";
-import { lightTheme } from "../constants/styleTheme";
+import { lightTheme } from "../themes/styleTheme";
 
 const queryClient = new QueryClient();
 
