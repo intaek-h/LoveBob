@@ -12,18 +12,23 @@ import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { TRANSFORMERS } from "@lexical/markdown";
+import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
+import { $generateHtmlFromNodes } from "@lexical/html";
+import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
 import ToolbarPlugin from "../../components/editorPlugins/ToolbarPlugin";
 import AutoLinkPlugin from "../../components/editorPlugins/AutoLinkPlugin";
 import ListMaxIndentLevelPlugin from "../../components/editorPlugins/ListMaxIndentLevelPlugin";
 import EditorPlaceholder from "../../components/editorPlugins/EditorPlaceHolder";
+import { useState } from "react";
+import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
-const editorConfig = {
+interface Props {
+  restaurant: string;
+}
+
+export const editorConfig = {
   namespace: "namespace",
   theme: EditorTheme,
-  onError(error: Error) {
-    console.log(error);
-  },
   nodes: [
     HeadingNode,
     ListNode,
@@ -37,27 +42,46 @@ const editorConfig = {
     AutoLinkNode,
     LinkNode,
   ],
+  onError(error: Error) {
+    console.log(error);
+  },
 };
 
-export default function EditorContainer() {
+export default function EditorContainer({ restaurant }: Props) {
   return (
-    <LexicalComposer initialConfig={editorConfig}>
-      <div className="editor-container">
-        <ToolbarPlugin />
-        <div className="editor-inner">
-          <RichTextPlugin
-            contentEditable={<ContentEditable className="editor-input" />}
-            placeholder={<EditorPlaceholder />}
-          />
-          <HistoryPlugin />
-          <AutoFocusPlugin />
-          <ListPlugin />
-          <LinkPlugin />
-          <AutoLinkPlugin />
-          <ListMaxIndentLevelPlugin maxDepth={2} />
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
-        </div>
+    <div className="editor-container">
+      <ToolbarPlugin />
+      <div className="editor-inner">
+        <RichTextPlugin
+          contentEditable={<ContentEditable spellCheck={false} className="markdown-body" />}
+          placeholder={<EditorPlaceholder restaurant={restaurant} />}
+        />
+        <HistoryPlugin />
+        <AutoFocusPlugin />
+        <ListPlugin />
+        <LinkPlugin />
+        <AutoLinkPlugin />
+        <ListMaxIndentLevelPlugin maxDepth={1} />
+        <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       </div>
-    </LexicalComposer>
+      <Temp />
+    </div>
+  );
+}
+
+function Temp() {
+  const [editor] = useLexicalComposerContext();
+
+  const handleClick = () => {
+    editor.update(() => {
+      const html = $generateHtmlFromNodes(editor, null);
+      console.log(html);
+    });
+  };
+
+  return (
+    <div>
+      <button onClick={handleClick}>logger</button>
+    </div>
   );
 }

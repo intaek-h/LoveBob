@@ -1,4 +1,4 @@
-import "../public/editorStyles.css";
+import "../public/github-light.css";
 import type { AppProps } from "next/app";
 import Layout from "../components/layouts";
 import { QueryClientProvider, QueryClient } from "react-query";

@@ -47,10 +47,10 @@ import {
 
 const LowPriority = 1;
 
-const supportedBlockTypes = new Set(["paragraph", "quote", "code", "h1", "h2", "ul", "ol"]);
+const supportedBlockTypes = new Set(["paragraph", "quote", "h1", "h2", "ul", "ol"]);
 
 const blockTypeToBlockName: { [type: string]: string } = {
-  code: "코드",
+  // code: "코드",
   h1: "제목",
   h2: "부제목",
   // h3: "Heading",
@@ -423,11 +423,11 @@ function BlockOptionsDropdownList({
         <span className="text">인용</span>
         {blockType === "quote" && <span className="active" />}
       </button>
-      <button className="item" onClick={formatCode}>
+      {/* <button className="item" onClick={formatCode}>
         <span className="icon code" />
         <span className="text">코드</span>
         {blockType === "code" && <span className="active" />}
-      </button>
+      </button> */}
     </div>
   );
 }
@@ -594,9 +594,7 @@ export default function ToolbarPlugin() {
           <Divider />
         </>
       )}
-      {blockType === "code" ? //   <Select // <>
-      //     className="toolbar-item code-language"
-      //     onChange={onCodeLanguageSelect}
+      {blockType === "code" ? //     onChange={onCodeLanguageSelect} //     className="toolbar-item code-language" //   <Select // <>
       //     options={codeLanguges}
       //     value={codeLanguage}
       //   />

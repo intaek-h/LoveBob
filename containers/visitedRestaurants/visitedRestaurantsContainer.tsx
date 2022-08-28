@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import styled from "styled-components";
 import { ServerSideProps } from "../../pages/users/[id]";
@@ -12,6 +13,8 @@ const RESTAURANT_LIMIT = 6;
 const VisitedRestaurantsContainer = ({ restaurants, userName }: Props) => {
   const [startIdx, setStartIdx] = useState(0);
 
+  const router = useRouter();
+
   const handleNextClick = () => {
     if (restaurants && startIdx + RESTAURANT_LIMIT > restaurants.length) return;
 
@@ -22,6 +25,14 @@ const VisitedRestaurantsContainer = ({ restaurants, userName }: Props) => {
     if (restaurants && startIdx - RESTAURANT_LIMIT < 0) return;
 
     setStartIdx((prev) => prev - RESTAURANT_LIMIT);
+  };
+
+  const handleWriteButtonClick = (name: string, id: string) => () => {
+    const encodedName = encodeURIComponent(name.trim());
+    const encodedId = encodeURIComponent(id);
+    const queries = `restaurant=${encodedName}&id=${encodedId}`;
+
+    router.push(`/posts/review?${queries}`);
   };
 
   return (
@@ -48,7 +59,9 @@ const VisitedRestaurantsContainer = ({ restaurants, userName }: Props) => {
                 <Name>{restaurant.name}</Name>
                 <PostCount>{restaurant.posts} 개의 후기</PostCount>
               </div>
-              <WriteButton>글 쓰기</WriteButton>
+              <WriteButton onClick={handleWriteButtonClick(restaurant.name, restaurant.id)}>
+                글 쓰기
+              </WriteButton>
             </Title>
             <div>
               <City>{restaurant.city}</City>

@@ -54,6 +54,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     roadAddress: `${record.restaurant.rd_nm} ${record.restaurant.bld_num}`,
     category: record.restaurant.mcate_nm,
     posts: record.restaurant._count.Posts,
+    id: record.restaurantsId,
   }));
   
   const props = {
@@ -113,7 +114,7 @@ const RightContainer = styled.div`
   width: 500px;
 `;
 
-const Line = styled.div<LineProps>`
+export const Line = styled.div<LineProps>`
   width: 100%;
   border-bottom: 1px solid ${({ theme }) => theme.element.placeholder};
   margin: ${(props) => props.margin || 0}px 0;
