@@ -1,26 +1,18 @@
 // @ts-nocheck
-import { useQuery, QueryObserverOptions } from "react-query";
+import { useQuery, QueryObserverOptions } from "@tanstack/react-query";
 import { useRouter } from "next/router";
+import { Session } from "next-auth";
 
 interface SessionOptions {
   required?: boolean;
   redirectTo?: string;
-  queryConfig: QueryObserverOptions;
+  queryConfig?: QueryObserverOptions;
 }
 
 type Response = [Session, boolean];
 
-type Session = {
-  expires: string;
-  user: {
-    name: string;
-    email: string;
-    image: string;
-  };
-};
-
 export const SESSION_STALE_TIME = 60 * 1000 * 60 * 3; // 3 hours
-export const SESSION_REFETCH_INTERVAL = 60 * 1000 * 3; // 5 minutes
+export const SESSION_REFETCH_INTERVAL = 60 * 1000 * 3; // 3 minutes
 
 export async function fetchSession() {
   const res = await fetch("/api/auth/session");

@@ -1,25 +1,5 @@
-import type { GetServerSideProps, NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
-import prisma from "../lib/prisma";
-
-// SET @선릉 = ST_SRID(POINT(127.048995, 37.504506), 4326);
-// SET @아현 = ST_SRID(POINT(126.952811165218, 37.559690000903), 4326);
-// SELECT poi_nm, rd_nm, bld_num, loc from restaurants WHERE ST_Distance(restaurants.loc, @아현) < 300;
-
-// export const getServerSideProps: GetServerSideProps = async () => {
-//   const result = await prisma.$queryRaw`
-//     select poi_nm as name, rd_nm as road, bld_num as building_number
-//     from restaurants
-//     where ST_Distance(restaurants.loc, ST_SRID(POINT(126.952811165218, 37.559690000903), 4326)) < 300;
-//   `;
-
-//   return {
-//     props: {
-//       result,
-//     },
-//   };
-// };
 
 type Props = {
   result: {
