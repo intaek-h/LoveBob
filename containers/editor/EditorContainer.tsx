@@ -1,5 +1,4 @@
 import EditorTheme from "../../themes/editorTheme";
-import { LexicalComposer } from "@lexical/react/LexicalComposer";
 import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
 import { ContentEditable } from "@lexical/react/LexicalContentEditable";
 import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
@@ -12,15 +11,11 @@ import { AutoLinkNode, LinkNode } from "@lexical/link";
 import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
 import { ListPlugin } from "@lexical/react/LexicalListPlugin";
 import { MarkdownShortcutPlugin } from "@lexical/react/LexicalMarkdownShortcutPlugin";
-import { $convertToMarkdownString, TRANSFORMERS } from "@lexical/markdown";
-import { $generateHtmlFromNodes } from "@lexical/html";
-import { OnChangePlugin } from "@lexical/react/LexicalOnChangePlugin";
+import { TRANSFORMERS } from "@lexical/markdown";
 import ToolbarPlugin from "../../components/editorPlugins/ToolbarPlugin";
 import AutoLinkPlugin from "../../components/editorPlugins/AutoLinkPlugin";
 import ListMaxIndentLevelPlugin from "../../components/editorPlugins/ListMaxIndentLevelPlugin";
 import EditorPlaceholder from "../../components/editorPlugins/EditorPlaceHolder";
-import { useState } from "react";
-import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 
 interface Props {
   restaurant: string;
@@ -64,24 +59,6 @@ export default function EditorContainer({ restaurant }: Props) {
         <ListMaxIndentLevelPlugin maxDepth={1} />
         <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
       </div>
-      <Temp />
-    </div>
-  );
-}
-
-function Temp() {
-  const [editor] = useLexicalComposerContext();
-
-  const handleClick = () => {
-    editor.update(() => {
-      const html = $generateHtmlFromNodes(editor, null);
-      console.log(html);
-    });
-  };
-
-  return (
-    <div>
-      <button onClick={handleClick}>logger</button>
     </div>
   );
 }

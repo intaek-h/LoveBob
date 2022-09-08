@@ -1,8 +1,9 @@
 import { NextApiRequest } from "next";
 import { NextApiResponse } from "next";
+import { DefaultResponse } from "../../../../../apis/types";
 import prisma from "../../../../../lib/prisma";
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<DefaultResponse>) {
   const restaurantId = req.query.restaurantId as string;
   const userId = req.query.id as string;
 
@@ -10,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       await prisma.visitedRestaurants.create({
         data: {
-          restaurantsId: restaurantId,
+          restaurantId,
           userId: userId,
         },
       });
@@ -27,8 +28,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       await prisma.visitedRestaurants.delete({
         where: {
-          userId_restaurantsId: {
-            restaurantsId: restaurantId,
+          userId_restaurantId: {
+            restaurantId,
             userId,
           },
         },

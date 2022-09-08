@@ -56,7 +56,7 @@ const VisitedRestaurantsContainer = ({ restaurants, userName }: Props) => {
           <RestaurantContainer key={i}>
             <Title>
               <div>
-                <Name>{restaurant.name}</Name>
+                <Name>{restaurant.name.trim()}</Name>
                 <PostCount>{restaurant.posts} 개의 후기</PostCount>
               </div>
               <WriteButton onClick={handleWriteButtonClick(restaurant.name, restaurant.id)}>
@@ -124,9 +124,9 @@ const Title = styled.div`
 `;
 
 const Name = styled.span`
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: bold;
-  margin-right: 6px;
+  margin-right: 8px;
 `;
 
 const PostCount = styled.span`

@@ -1,12 +1,12 @@
 // @ts-nocheck
-import { useQuery, QueryObserverOptions } from "react-query";
+import { useQuery, QueryObserverOptions } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { Session } from "next-auth";
 
 interface SessionOptions {
   required?: boolean;
   redirectTo?: string;
-  queryConfig: QueryObserverOptions;
+  queryConfig?: QueryObserverOptions;
 }
 
 type Response = [Session, boolean];
