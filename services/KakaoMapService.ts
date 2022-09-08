@@ -1,11 +1,12 @@
 import { AxiosInstance, AxiosResponse } from "axios";
-import { AddressToCoords } from "../types/externals/kakao";
+import { kakaoMapApi } from "../apis/kakao";
+import { AddressToCoords } from "../apis/kakao/types";
 
 class ApiService {
-  constructor(private API: AxiosInstance) {}
+  constructor(private api: AxiosInstance) {}
 
-  public kakaoApiAddressToCoords = async (query: string): Promise<AxiosResponse<AddressToCoords>> =>
-    await this.API.get(
+  public kakaoApiAddressToCoords = async (query: string) =>
+    await this.api.get<AddressToCoords>(
       `https://dapi.kakao.com/v2/local/search/address.json?query=${encodeURIComponent(query)}`,
       {
         headers: {
@@ -15,4 +16,4 @@ class ApiService {
     );
 }
 
-export default ApiService;
+export default new ApiService(kakaoMapApi);

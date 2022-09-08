@@ -1,22 +1,16 @@
 import axios from "axios";
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import styled from "styled-components";
-import ApiService from "../../services/Api";
-import { Restaurant } from "./NearbyRestaurants";
 import { Coords } from "../../containers/nearbySearch/NearbySearchContainer";
+import KakaoMapService from "../../services/KakaoMapService";
+import { TitleInput } from "../../styled-components/inputs";
+import RestaurantService, { Restaurant } from "../../services/RestaurantService";
 
 interface Props {
   coords: Coords | undefined;
   setRestaurants: Dispatch<SetStateAction<Restaurant[] | undefined>>;
   setCoords: Dispatch<SetStateAction<Coords | undefined>>;
 }
-
-interface RestaurantsResponse {
-  success: boolean;
-  result: Restaurant[];
-}
-
-const ApiInstance = new ApiService(axios);
 
 const NearbySearch = ({ coords, setCoords, setRestaurants }: Props) => {
   const [query, setQuery] = useState("");
@@ -31,7 +25,7 @@ const NearbySearch = ({ coords, setCoords, setRestaurants }: Props) => {
 
     if (!query) return;
 
-    const { data } = await ApiInstance.kakaoApiAddressToCoords(query);
+    const { data } = await KakaoMapService.kakaoApiAddressToCoords(query);
 
     if (data.meta.total_count === 0) {
       setResults(undefined);
@@ -53,11 +47,9 @@ const NearbySearch = ({ coords, setCoords, setRestaurants }: Props) => {
     if (!coords) return;
 
     try {
-      const { data } = await axios.get<RestaurantsResponse>(
-        `/api/restaurants?x=${coords.x}&y=${coords.y}`
-      );
+      const response = await RestaurantService.getNearbyRestaurants({ x: coords.x, y: coords.y });
 
-      setRestaurants(data.result);
+      setRestaurants(response.result);
     } catch (error) {
       setResults(undefined);
       setCoords(undefined);
@@ -100,12 +92,8 @@ const Form = styled.form`
   justify-content: space-between;
 `;
 
-const Input = styled.input`
-  font-size: 0.95rem;
+const Input = styled(TitleInput)`
   width: 90%;
-  padding: 10px;
-  border: 1px solid ${({ theme }) => theme.element.monochrome_2};
-  border-radius: 4px;
 `;
 
 const SearchButton = styled.button`
@@ -122,13 +110,15 @@ const AddressContainer = styled.div`
 `;
 
 const Address = styled.span<AddressProp>`
-  font-weight: ${(prop) => prop.selected && "bold"};
-  border-left: 2px solid ${(prop) => (prop.selected ? "#0fae00" : "#bcbcbc")};
+  font-weight: ${({ selected }) => selected && "bold"};
+  border-left: 2px solid
+    ${({ theme, selected }) =>
+      selected ? theme.element.green_prism_3 : theme.element.monochrome_3};
   padding-left: 8px;
   cursor: pointer;
 
   :hover {
-    border-left: 2px solid #0fae00;
+    border-left: 2px solid ${({ theme }) => theme.element.green_prism_3};
   }
 `;
 
@@ -136,11 +126,10 @@ const NextButton = styled.button`
   appearance: none;
   border: none;
   border-radius: 4px;
-  background-color: #2da44e;
+  background-color: ${({ theme }) => theme.element.green_prism_4};
   width: 200px;
   padding: 10px;
-  margin-left: 5px;
-  color: #ffffff;
+  color: ${({ theme }) => theme.element.monochrome_1};
   cursor: pointer;
 
   :disabled {

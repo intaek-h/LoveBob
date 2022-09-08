@@ -3,13 +3,16 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import styled from "styled-components";
 import TitleInput from "../../components/editorPlugins/TitleInput";
+import UploadButton from "../../components/reviewEditor/UploadButton";
 import EditorContainer, { editorConfig } from "../../containers/editor/EditorContainer";
+import MultipleImageUploader from "../../containers/multipleImageUploader";
+import { Line } from "../users/[id]";
 
 const NewPostPage: NextPage = () => {
   const { query } = useRouter();
 
   const restaurantName = query.restaurant as string;
-  const restaurantId = query.id;
+  const restaurantId = query.id as string;
 
   if (!restaurantName || !restaurantId)
     return (
@@ -26,7 +29,11 @@ const NewPostPage: NextPage = () => {
           <TitleInput />
           <EditorContainer restaurant={restaurantName} />
         </LeftContainer>
-        <RightContainer></RightContainer>
+        <RightContainer>
+          <UploadButton restaurantId={restaurantId} />
+          <Line margin={20} />
+          <MultipleImageUploader restaurantId={restaurantId} />
+        </RightContainer>
       </Body>
     </LexicalComposer>
   );
@@ -40,7 +47,7 @@ const Body = styled.div`
 
 const RestaurantName = styled.h1`
   margin: 0;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 
 const LeftContainer = styled.div`
@@ -48,8 +55,8 @@ const LeftContainer = styled.div`
 `;
 
 const RightContainer = styled.div`
+  padding-top: 40px;
   width: 300px;
-  border: 1px solid;
 `;
 
 export default NewPostPage;

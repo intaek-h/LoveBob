@@ -3,28 +3,22 @@ import { signIn } from "next-auth/react";
 import Image from "next/image";
 import styled from "styled-components";
 import { lighten } from "polished";
-import { useQuery } from "react-query";
-import axios from "axios";
-
-import logo from "../../assets/icons/bob-logo.svg";
-import { SESSION_REFETCH_INTERVAL, SESSION_STALE_TIME, useSession } from "../../hooks/useSession";
+import logo from "../../public/images/icons/bob-logo.svg";
+import { useSession } from "../../hooks/queryHooks/useSession";
+import useProfileInfo from "../../hooks/queryHooks/useProfileInfo";
 
 const Header = () => {
   const router = useRouter();
-
   const [session] = useSession();
-
-  const { data } = useQuery("key", () => axios.get("/api/users"), {
+  const { data: profile } = useProfileInfo({
     enabled: !!session,
-    staleTime: SESSION_STALE_TIME,
-    refetchInterval: SESSION_REFETCH_INTERVAL,
   });
 
-  if (data?.data.success)
+  if (profile?.success)
     return (
       <Container>
         <Image src={logo} alt="logo" onClick={() => router.push("/")} />
-        <ProfileIcon onClick={() => router.push(`/users/${data.data.result.id}`)} />
+        <ProfileIcon onClick={() => router.push(`/users/${profile.result?.id}`)} />
       </Container>
     );
 

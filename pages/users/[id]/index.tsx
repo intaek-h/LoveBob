@@ -23,13 +23,13 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
       id: userId,
     },
     include: {
-      Posts: true,
+      Reviews: true,
       VisitedRestaurants: {
         include: {
           restaurant: {
             select: {
               _count: {
-                select: { Posts: true },
+                select: { Reviews: true },
               },
               poi_nm: true,
               branch_nm: true,
@@ -51,8 +51,8 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     city: `${record.restaurant.sido_nm} ${record.restaurant.sgg_nm}`,
     roadAddress: `${record.restaurant.rd_nm} ${record.restaurant.bld_num}`,
     category: record.restaurant.mcate_nm,
-    posts: record.restaurant._count.Posts,
-    id: record.restaurantsId,
+    posts: record.restaurant._count.Reviews,
+    id: record.restaurantId,
   }));
 
   const props = {
@@ -64,10 +64,10 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
       title: user?.title,
       description: user?.description,
       visits: user?.VisitedRestaurants.length,
-      posts: user?.Posts.length,
+      posts: user?.Reviews.length,
     },
     visitedRestaurants: filteredVisitedRestaurants,
-    posts: user?.Posts,
+    posts: user?.Reviews,
   };
 
   return {

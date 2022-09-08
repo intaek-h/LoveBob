@@ -1,10 +1,12 @@
-import axios from "axios";
 import { useRouter } from "next/router";
 import { darken } from "polished";
 import React, { useState, useRef } from "react";
 import { FixedCropper, ImageRestriction, FixedCropperRef } from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
 import styled from "styled-components";
+import ProfileService from "../../services/ProfileService";
+import { PaddedButton } from "../../styled-components/buttons";
+import { ErrorMsg, SuccessMsg } from "../../styled-components/texts";
 
 const ONE_MEGABYTE = 1000000;
 
@@ -50,16 +52,24 @@ const ImageUploader = () => {
       setError("");
 
       const croppedImage = cropperRef.current.getCanvas()?.toDataURL("image/webp", 0.8);
+      const userId = query.id as string;
 
-      const { data } = await axios.put(`/api/users/${query.id}`, {
-        type: "image",
-        image: croppedImage,
-      });
+      if (croppedImage === undefined) return setError("요청을 실패했습니다");
 
-      if (!data.success) return setError("요청을 실패했습니다");
+      try {
+        const response = await ProfileService.changeProfileImage({
+          type: "image",
+          image: croppedImage,
+          userId,
+        });
 
-      setImage("");
-      setSucess("프로필 이미지를 변경했습니다");
+        if (!response.success) return setError("요청을 실패했습니다");
+
+        setImage("");
+        setSucess("프로필 이미지를 변경했습니다. 즉시 반영되지 않을 수 있습니다.");
+      } catch (error) {
+        setError("요청을 실패했습니다");
+      }
     }
   };
 
@@ -83,8 +93,6 @@ const ImageUploader = () => {
           }}
           imageRestriction={ImageRestriction.stencil}
         />
-        {error && <Error>{error}</Error>}
-        {success && <Success>{success}</Success>}
         <Label htmlFor="image">이미지 첨부하기</Label>
         <Input
           type="file"
@@ -92,6 +100,8 @@ const ImageUploader = () => {
           onChange={handleFileInput}
           accept="image/png, image/jpeg, image/webp"
         />
+        {error && <ErrorMsg>{error}</ErrorMsg>}
+        {success && <SuccessMsg>{success}</SuccessMsg>}
       </Container>
       <Button disabled={!image} onClick={handleUpload}>
         프로필 변경하기
@@ -114,14 +124,14 @@ const Header = styled.div`
 const Label = styled.label`
   display: block;
   text-align: center;
-  color: #777777;
+  color: ${({ theme }) => theme.text.monochrome_4};
   padding: 10px;
   border-radius: 3px;
   user-select: none;
   cursor: pointer;
 
   &:hover {
-    color: ${() => darken(0.2, "#777777")};
+    color: ${({ theme }) => darken(0.2, theme.text.monochrome_4)};
   }
 `;
 
@@ -129,28 +139,17 @@ const Input = styled.input`
   display: none;
 `;
 
-const Error = styled.span`
-  font-size: 0.7rem;
-  color: red;
-`;
+const Button = styled(PaddedButton)`
+  padding: 10px 0;
+  background-color: ${({ theme }) => theme.element.green_prism_4};
+  color: ${({ theme }) => theme.text.monochrome_1};
 
-const Success = styled.span`
-  font-size: 0.7rem;
-  color: #2da44e;
-`;
-
-const Button = styled.button`
-  appearance: none;
-  border: none;
-  border-radius: 4px;
-  color: #fff;
-  width: 100%;
-  padding: 10px;
-  bottom: 0;
-  background-color: #2da44e;
-  cursor: pointer;
+  :hover {
+    background-color: ${({ theme }) => darken(0.02, theme.element.green_prism_4)};
+  }
 
   :disabled {
+    border-color: ${({ theme }) => theme.element.placeholder};
     background-color: ${({ theme }) => theme.element.placeholder};
   }
 `;

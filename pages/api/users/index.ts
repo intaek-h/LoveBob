@@ -1,23 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { unstable_getServerSession } from "next-auth";
-import { NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]";
 import prisma from "../../../lib/prisma";
-import { Prisma } from "@prisma/client";
+import { User } from "@prisma/client";
+import { DefaultResponse } from "../../../apis/types";
 
-type Data = {
-  id: string;
-  name: string;
-  email: string;
-  emailVerified?: string;
-  image?: string;
-};
+export interface ProfileResponse extends DefaultResponse {
+  result?: User;
+}
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse<ProfileResponse>) {
   try {
     const session = await unstable_getServerSession(req, res, authOptions);
 
-    if (!session) throw ""; // 미들웨어에서 처리할테니까 없애도 됨.
+    if (!session) {
+      return res.status(404).json({ success: false });
+    }
 
     const user = await prisma.user.findFirst({
       where: {

@@ -1,8 +1,9 @@
 import Image from "next/image";
 import { useState } from "react";
 import styled from "styled-components";
-import Modal from "../../components/profile/Modal";
-import { useSession } from "../../hooks/useSession";
+import Modal from "../../components/modal";
+import ProfileEditor from "../../components/profile/ProfileEditor";
+import { useSession } from "../../hooks/queryHooks/useSession";
 import type { ServerSideProps } from "../../pages/users/[id]";
 
 type Props = ServerSideProps["profile"];
@@ -16,23 +17,24 @@ const ProfileContainer = ({ isOwner, name, image, posts, visits, title, descript
     <>
       <Container>
         <ProfileImageContainer>
-          {image && <ProfileImage src={image} width="150" height="150" alt="profile" />}
+          {image && <ProfileImage src={image} width="150" height="150" alt="profile-image" />}
         </ProfileImageContainer>
+
         <ProfileTextContainer>
           <Name>{name}</Name>
-
           <span>포스트 </span>
           <BoldContent>{posts}</BoldContent>
           <span style={{ marginLeft: 30 }}>방문한 곳 </span>
           <BoldContent>{visits}</BoldContent>
-
           <Title>{title}</Title>
           <Description>{description}</Description>
         </ProfileTextContainer>
-        {isOwner && (
+        {isOwner && session && (
           <>
             <Setting onClick={() => setIsModalOpen(true)}>편집</Setting>
-            <Modal onClose={() => setIsModalOpen(false)} show={isModalOpen} />
+            <Modal show={isModalOpen}>
+              <ProfileEditor closeModal={() => setIsModalOpen(false)} />
+            </Modal>
           </>
         )}
       </Container>
@@ -88,7 +90,7 @@ const Setting = styled.span`
   position: absolute;
   top: 5px;
   right: 5px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   color: #b8b8b8;
   cursor: pointer;
 `;
