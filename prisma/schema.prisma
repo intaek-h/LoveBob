@@ -39,7 +39,8 @@ model Session {
 model User {
   id                 String               @id @default(cuid())
   name               String
-  nickname           String?              @unique
+  nickname           String?
+  bobId              String?              @unique
   email              String               @unique
   emailVerified      DateTime?
   image              String?              @db.VarChar(500)
@@ -50,6 +51,8 @@ model User {
   VisitedRestaurants VisitedRestaurants[]
   Reviews            Reviews[]
   ReviewImages       ReviewImages[]
+  ReviewLikes        ReviewLikes[]
+  ReviewComments     ReviewComments[]
 }
 
 model VerificationToken {
@@ -82,6 +85,7 @@ model Restaurants {
   grid_cd   String?              @db.VarChar(30)
   origin    String?              @db.VarChar(200)
   base_ymd  String?              @db.VarChar(20)
+  createdAt DateTime             @default(now())
   loc       Unsupported("point")
 
   Reviews            Reviews[]
@@ -92,36 +96,65 @@ model Restaurants {
 }
 
 model VisitedRestaurants {
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User        @relation(fields: [userId], references: [id])
   restaurant   Restaurants @relation(fields: [restaurantId], references: [id])
   userId       String
   restaurantId String      @db.VarChar(50)
+  isFavorite   Boolean     @default(false)
+  createdAt    DateTime    @default(now())
 
   @@id([userId, restaurantId])
 }
 
 model Reviews {
-  user         User        @relation(fields: [userId], references: [id])
-  restaurant   Restaurants @relation(fields: [restaurantId], references: [id])
   id           String      @unique @default(cuid())
-  userId       String
+  user         User        @relation(fields: [userId], references: [id])
+  userId       String      @db.VarChar(255)
+  restaurant   Restaurants @relation(fields: [restaurantId], references: [id])
   restaurantId String      @db.VarChar(50)
-  title        String
+  title        String      @db.VarChar(300)
+  titleLink    String      @unique @db.VarChar(500)
   content      String      @db.Text
+  preview      String      @db.VarChar(255)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 
-  ReviewImages ReviewImages[]
+  ReviewImages   ReviewImages[]
+  ReviewLikes    ReviewLikes[]
+  ReviewComments ReviewComments[]
 
   @@id([userId, restaurantId])
 }
 
+model ReviewLikes {
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  review    Reviews  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  String
+  createdAt DateTime @default(now())
+
+  @@id([userId, reviewId])
+}
+
+model ReviewComments {
+  id        String   @id @default(cuid())
+  content   String   @db.VarChar(500)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  review    Reviews  @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  String
+}
+
 model ReviewImages {
+  id           String      @id @default(cuid())
   urls         String      @db.Text
   user         User        @relation(fields: [userId], references: [id])
   userId       String
-  review       Reviews     @relation(fields: [reviewId], references: [id])
+  review       Reviews     @relation(fields: [reviewId], references: [id], onDelete: Cascade)
   reviewId     String
   restaurant   Restaurants @relation(fields: [restaurantId], references: [id])
   restaurantId String
-
-  @@id([userId, reviewId, restaurantId])
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
 }

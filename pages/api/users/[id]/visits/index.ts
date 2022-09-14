@@ -1,29 +1,20 @@
-import { DefaultResponse } from "./../../../../../apis/types";
+import { DefaultResponse } from "../../../../../apis/types";
 import { NextApiRequest, NextApiResponse } from "next";
 import prisma from "../../../../../lib/prisma";
 
 export interface Restaurant {
-  poi_nm: string;
-  branch_nm: string | null;
-  sub_nm: string | null;
-  sido_nm: string | null;
-  sgg_nm: string | null;
-  rd_nm: string | null;
-  bld_num: string | null;
-  mcate_nm: string | null;
-  _count: {
-    Reviews: number;
-  };
-}
-
-interface VisitedRestaurant {
-  userId: string;
-  restaurantId: string;
-  restaurant: Restaurant;
+  name: string;
+  city: string;
+  roadAddress: string;
+  category: string | null;
+  posts: number;
+  id: string;
+  addedDate: number;
+  isFavorite: boolean;
 }
 
 export interface VisitedRestaurantResponse extends DefaultResponse {
-  result?: VisitedRestaurant[];
+  result?: Restaurant[];
 }
 
 export default async function handler(
@@ -56,7 +47,18 @@ export default async function handler(
       },
     });
 
-    res.status(200).json({ success: true, result: visits });
+    const filteredVisitedRestaurants = visits.map((record) => ({
+      name: `${record.restaurant.poi_nm} ${record.restaurant.branch_nm} ${record.restaurant.sub_nm}`,
+      city: `${record.restaurant.sido_nm} ${record.restaurant.sgg_nm}`,
+      roadAddress: `${record.restaurant.rd_nm} ${record.restaurant.bld_num}`,
+      category: record.restaurant.mcate_nm,
+      posts: record.restaurant._count.Reviews,
+      id: record.restaurantId,
+      addedDate: record.createdAt.getTime(),
+      isFavorite: record.isFavorite,
+    }));
+
+    res.status(200).json({ success: true, result: filteredVisitedRestaurants });
   } catch (error) {
     res.status(400).json({ success: false });
   }

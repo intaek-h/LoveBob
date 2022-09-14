@@ -4,6 +4,7 @@ import React, { useState, useRef } from "react";
 import { FixedCropper, ImageRestriction, FixedCropperRef } from "react-advanced-cropper";
 import "react-advanced-cropper/dist/style.css";
 import styled from "styled-components";
+import { useSession } from "../../hooks/queryHooks/useSession";
 import ProfileService from "../../services/ProfileService";
 import { PaddedButton } from "../../styled-components/buttons";
 import { ErrorMsg, SuccessMsg } from "../../styled-components/texts";
@@ -18,6 +19,7 @@ const ImageUploader = () => {
   const cropperRef = useRef<FixedCropperRef>(null);
 
   const { query } = useRouter();
+  const [session] = useSession();
 
   const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target || !e.target.files?.length) return;
@@ -52,7 +54,7 @@ const ImageUploader = () => {
       setError("");
 
       const croppedImage = cropperRef.current.getCanvas()?.toDataURL("image/webp", 0.8);
-      const userId = query.id as string;
+      const userId = session.user.id;
 
       if (croppedImage === undefined) return setError("요청을 실패했습니다");
 
@@ -104,7 +106,7 @@ const ImageUploader = () => {
         {success && <SuccessMsg>{success}</SuccessMsg>}
       </Container>
       <Button disabled={!image} onClick={handleUpload}>
-        프로필 변경하기
+        프로필 이미지 변경하기
       </Button>
     </>
   );

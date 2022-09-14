@@ -6,7 +6,7 @@ import TitleInput from "../../components/editorPlugins/TitleInput";
 import UploadButton from "../../components/reviewEditor/UploadButton";
 import EditorContainer, { editorConfig } from "../../containers/editor/EditorContainer";
 import MultipleImageUploader from "../../containers/multipleImageUploader";
-import { Line } from "../users/[id]";
+import { Line } from "../../styled-components/etc";
 
 const NewPostPage: NextPage = () => {
   const { query } = useRouter();
@@ -31,7 +31,7 @@ const NewPostPage: NextPage = () => {
         </LeftContainer>
         <RightContainer>
           <UploadButton restaurantId={restaurantId} />
-          <Line margin={20} />
+          <Line marginBot={20} marginTop={20} />
           <MultipleImageUploader restaurantId={restaurantId} />
         </RightContainer>
       </Body>

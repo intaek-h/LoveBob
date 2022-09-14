@@ -50,7 +50,7 @@ const MultipleImageUploader = ({ restaurantId }: Props) => {
 
         const { result: presignedUrl } = await ReviewService.getPresignedUrl(
           restaurantId,
-          session.userId
+          session.user.id
         );
 
         await ReviewService.uploadImageToPresignedUrl(presignedUrl!, blob);

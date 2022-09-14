@@ -1,7 +1,10 @@
-import { Session as EnhancedSession } from "next-auth";
+import { Session as EnhancedSession, User } from "next-auth";
+import { User as PrismaUser } from "@prisma/client";
 
 declare module "next-auth" {
   export interface Session extends EnhancedSession {
-    userId: string;
+    user: User;
   }
+
+  export interface User extends PrismaUser {}
 }

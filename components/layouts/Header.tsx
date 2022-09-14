@@ -1,33 +1,39 @@
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 import Image from "next/image";
 import styled from "styled-components";
 import { lighten } from "polished";
 import logo from "../../public/images/icons/bob-logo.svg";
 import { useSession } from "../../hooks/queryHooks/useSession";
-import useProfileInfo from "../../hooks/queryHooks/useProfileInfo";
+import Modal from "../modal";
+import { useState } from "react";
+import OnboardForm from "../onboard";
 
 const Header = () => {
   const router = useRouter();
   const [session] = useSession();
-  const { data: profile } = useProfileInfo({
-    enabled: !!session,
-  });
+  const [isModalOpen, setIsModalOpen] = useState(true);
 
-  if (profile?.success)
+  if (session?.user.bobId && session?.user.nickname)
     return (
       <Container>
         <Image src={logo} alt="logo" onClick={() => router.push("/")} />
-        <ProfileIcon onClick={() => router.push(`/users/${profile.result?.id}`)} />
+        <button onClick={() => signOut()}>log out</button>
+        <ProfileIcon onClick={() => router.push(`/@${session.user.bobId}`)} />
       </Container>
     );
 
   if (session)
     return (
-      <Container>
-        <Image src={logo} alt="logo" onClick={() => router.push("/")} />
-        <ProfileIcon />
-      </Container>
+      <>
+        <Container>
+          <Image src={logo} alt="logo" onClick={() => router.push("/")} />
+          <ProfileIcon />
+        </Container>
+        <Modal show={isModalOpen}>
+          <OnboardForm closeModal={() => setIsModalOpen(false)} />
+        </Modal>
+      </>
     );
 
   return (
@@ -44,7 +50,6 @@ const Container = styled.div`
   justify-content: space-between;
   height: 60px;
   padding: 15px 20px;
-  margin-bottom: 40px;
 `;
 
 const LoginButton = styled.button`

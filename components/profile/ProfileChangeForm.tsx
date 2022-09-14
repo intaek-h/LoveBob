@@ -3,6 +3,7 @@ import { darken } from "polished";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import styled from "styled-components";
+import { useSession } from "../../hooks/queryHooks/useSession";
 import ProfileService from "../../services/ProfileService";
 import { PaddedButton } from "../../styled-components/buttons";
 import { InputContainer } from "../../styled-components/inputs";
@@ -21,19 +22,17 @@ const ProfileChangeForm = () => {
     formState: { errors, isDirty },
   } = useForm<Inputs>({ defaultValues: { description: "", title: "" } });
 
-  const { query } = useRouter();
+  const [session] = useSession();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
   const onSubmit: SubmitHandler<Inputs> = async (inputs) => {
     try {
-      const userId = query.id as string;
-
       const response = await ProfileService.changeProfileText({
         title: inputs.title,
         description: inputs.description,
         type: "description",
-        userId,
+        userId: session.user.id,
       });
 
       if (response.success) {
@@ -62,7 +61,7 @@ const ProfileChangeForm = () => {
         {message && <SuccessMsg>{message}</SuccessMsg>}
         {error && <ErrorMsg>{error}</ErrorMsg>}
         <SaveButton type="submit" disabled={!isDirty}>
-          저장
+          소개 변경하기
         </SaveButton>
       </form>
     </FormContainer>

@@ -24,6 +24,7 @@ export const lightTheme = {
     green_prism_2: "#dbede0",
     green_prism_3: "#0ea100",
     green_prism_4: "#2da44e",
+    blue_prism_4: "#004fd2",
   },
 };
 

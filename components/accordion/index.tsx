@@ -6,14 +6,15 @@ import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 
 interface Props {
   children?: React.ReactNode;
+  title: string;
 }
 
-export default function CustomizedAccordions({ children }: Props) {
+export default function CustomizedAccordions({ title, children }: Props & AccordionProps) {
   return (
     <div>
       <Accordion>
         <AccordionSummary>
-          <span>주변 음식점 확인하기</span>
+          <span>{title}</span>
         </AccordionSummary>
         <AccordionDetails>{children}</AccordionDetails>
       </Accordion>
