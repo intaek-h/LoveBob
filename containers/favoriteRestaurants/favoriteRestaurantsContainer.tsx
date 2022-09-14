@@ -5,7 +5,6 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import styled from "styled-components";
 import SimplePagination from "../../components/pagination/simple";
-import useAddFavoriteRestaurant from "../../hooks/queryHooks/useAddFavoriteRestaurant";
 import useDeleteFavoriteRestaurant from "../../hooks/queryHooks/useDeleteFavoriteRestaurant";
 import { useVisitedRestaurants } from "../../hooks/queryHooks/useVisitedRestaurants";
 import { Restaurant } from "../../pages/api/users/[id]/visits";
@@ -22,9 +21,8 @@ interface Props {
 }
 
 const RESTAURANT_LIMIT = 6;
-const noop = () => {};
 
-const VisitedRestaurantsContainer = ({
+const FavoriteRestaurantContainer = ({
   writtenReviews,
   userName,
   bobId,
@@ -36,15 +34,19 @@ const VisitedRestaurantsContainer = ({
 
   const [startIdx, setStartIdx] = useState(0);
   const [restaurants, setRestaurants] = useState<Restaurant[]>();
+  const [message, setMessage] = useState("");
 
-  restaurants?.sort((a, b) => b.addedDate - a.addedDate);
-
-  const addFavoriteRestaurant = useAddFavoriteRestaurant({
+  useVisitedRestaurants(userId, {
     onSuccess: (res) => {
-      if (res.success) alertAddSuccess();
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries(["visited-restaurants", userId]);
+      if (res.result) {
+        const favoriteRestaurants = res.result.filter((restaurant) => restaurant.isFavorite);
+
+        if (favoriteRestaurants.length) {
+          return setRestaurants(favoriteRestaurants);
+        }
+
+        setMessage(`${userName} 님은 아직 맛집을 찾지 못했어요.. ( ˘︹˘ )`);
+      }
     },
   });
 
@@ -57,23 +59,11 @@ const VisitedRestaurantsContainer = ({
     },
   });
 
-  useVisitedRestaurants(userId, {
-    onSuccess: (res) => {
-      if (res.result) {
-        setRestaurants(res.result);
-      }
-    },
-  });
+  restaurants?.sort((a, b) => b.addedDate - a.addedDate);
 
   const alertDeleteSuccess = () =>
     toast("맛집 리스트에서 삭제했어요", {
       toastId: "delete-favorite-restaurant",
-      type: "success",
-    });
-
-  const alertAddSuccess = () =>
-    toast("맛집 리스트에 추가했어요", {
-      toastId: "add-favorite-restaurant",
       type: "success",
     });
 
@@ -101,22 +91,15 @@ const VisitedRestaurantsContainer = ({
     router.push(link);
   };
 
-  const handleHeartClick = (status: boolean, restaurantId: string, userId: string) => async () => {
-    if (status === false) {
-      return addFavoriteRestaurant.mutate({ restaurantId, userId });
-    }
-
-    if (status === true) {
-      return deleteFavoriteRestaurant.mutate({ restaurantId, userId });
-    }
+  const handleHeartClick = (restaurantId: string, userId: string) => async () => {
+    deleteFavoriteRestaurant.mutate({ restaurantId, userId });
   };
 
   return (
     <Container>
       <Header>
         <div>
-          <strong>{userName}</strong> 님이 다녀온 식당들 · {restaurants?.length} 곳 ·
-          <Order> 등록순</Order>
+          <strong>{userName}</strong> 님의 맛집 · {restaurants?.length} 곳 ·<Order> 등록순</Order>
         </div>
         <SimplePagination
           currentIndex={startIdx}
@@ -127,58 +110,54 @@ const VisitedRestaurantsContainer = ({
         />
       </Header>
       <div>
-        {restaurants?.slice(startIdx, startIdx + RESTAURANT_LIMIT).map((restaurant, i) => {
-          const writtenReview = writtenReviews.find(
-            ({ restaurantId }) => restaurantId === restaurant.id
-          );
+        {!restaurants || !restaurants.length ? (
+          <Message>{message}</Message>
+        ) : (
+          restaurants.slice(startIdx, startIdx + RESTAURANT_LIMIT).map((restaurant, i) => {
+            const writtenReview = writtenReviews.find(
+              ({ restaurantId }) => restaurantId === restaurant.id
+            );
 
-          return (
-            <RestaurantContainer key={i}>
-              <Title>
-                <div>
-                  <Name>{restaurant.name.trim()}</Name>
-                  <PostCount>{restaurant.posts} 개의 후기</PostCount>
-                </div>
-                <div>
-                  {writtenReview && (
-                    <ReadReviewButton
-                      onClick={handleReadReviewClick(`/@${bobId}/${writtenReview.titleLink}`)}
-                    >
-                      리뷰 보기
-                    </ReadReviewButton>
-                  )}
-                  {isOwner && !writtenReview && (
-                    <WriteButton onClick={handleWriteButtonClick(restaurant.name, restaurant.id)}>
-                      글 쓰기
-                    </WriteButton>
-                  )}
-                </div>
-              </Title>
-              <Details>
-                <div>
-                  <City>{restaurant.city}</City>
-                  <Road>{restaurant.roadAddress}</Road>
-                </div>
-                <HeartContainer
-                  isOwner={isOwner}
-                  onClick={
-                    isOwner ? handleHeartClick(restaurant.isFavorite, restaurant.id, userId) : noop
-                  }
-                >
-                  {isOwner && restaurant.isFavorite && (
-                    <Image src={full_heart} width={25} height={25} alt="star" />
-                  )}
-                  {isOwner && !restaurant.isFavorite && (
-                    <Image src={empty_heart} width={25} height={25} alt="star" />
-                  )}
-                  {!isOwner && restaurant.isFavorite && (
-                    <Image src={full_heart} width={25} height={25} alt="star" />
-                  )}
-                </HeartContainer>
-              </Details>
-            </RestaurantContainer>
-          );
-        })}
+            return (
+              <RestaurantContainer key={i}>
+                <Title>
+                  <div>
+                    <Name>{restaurant.name.trim()}</Name>
+                    <PostCount>{restaurant.posts} 개의 후기</PostCount>
+                  </div>
+                  <div>
+                    {writtenReview && (
+                      <ReadReviewButton
+                        onClick={handleReadReviewClick(`/@${bobId}/${writtenReview.titleLink}`)}
+                      >
+                        리뷰 보기
+                      </ReadReviewButton>
+                    )}
+                    {isOwner && !writtenReview && (
+                      <WriteButton onClick={handleWriteButtonClick(restaurant.name, restaurant.id)}>
+                        글 쓰기
+                      </WriteButton>
+                    )}
+                  </div>
+                </Title>
+                <Details>
+                  <div>
+                    <City>{restaurant.city}</City>
+                    <Road>{restaurant.roadAddress}</Road>
+                  </div>
+                  <HeartContainer
+                    isOwner={isOwner}
+                    onClick={handleHeartClick(restaurant.id, userId)}
+                  >
+                    {isOwner && restaurant.isFavorite && (
+                      <Image src={full_heart} width={25} height={25} alt="heart-icon" />
+                    )}
+                  </HeartContainer>
+                </Details>
+              </RestaurantContainer>
+            );
+          })
+        )}
       </div>
     </Container>
   );
@@ -190,7 +169,7 @@ interface HeartContainerProps {
 
 const Container = styled.div`
   width: 100%;
-  height: 620px;
+  margin-bottom: 15px;
 `;
 
 const Header = styled.div`
@@ -201,9 +180,13 @@ const Header = styled.div`
   margin-bottom: 15px;
 `;
 
+const Message = styled.span`
+  color: ${({ theme }) => theme.text.monochrome_3};
+`;
+
 const RestaurantContainer = styled.div`
   padding-left: 12px;
-  border-left: 5px solid ${({ theme }) => theme.element.monochrome_2};
+  border-left: 5px solid ${({ theme }) => theme.element.green_prism_3};
   margin-bottom: 30px;
 `;
 
@@ -274,4 +257,4 @@ const HeartContainer = styled.div<HeartContainerProps>`
   }
 `;
 
-export default VisitedRestaurantsContainer;
+export default FavoriteRestaurantContainer;

@@ -42,4 +42,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     return;
   }
+
+  if (req.method === "PATCH" && req.body.type === "ADD") {
+    try {
+      await prisma.visitedRestaurants.update({
+        where: {
+          userId_restaurantId: {
+            restaurantId,
+            userId,
+          },
+        },
+        data: {
+          isFavorite: true,
+        },
+      });
+
+      res.status(200).json({ success: true });
+    } catch (error) {
+      res.status(400).json({ success: false });
+    }
+
+    return;
+  }
+
+  if (req.method === "PATCH" && req.body.type === "DELETE") {
+    try {
+      await prisma.visitedRestaurants.update({
+        where: {
+          userId_restaurantId: {
+            restaurantId,
+            userId,
+          },
+        },
+        data: {
+          isFavorite: false,
+        },
+      });
+
+      res.status(200).json({ success: true });
+    } catch (error) {
+      res.status(400).json({ success: false });
+    }
+
+    return;
+  }
 }

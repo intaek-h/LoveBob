@@ -4,13 +4,21 @@ import styled from "styled-components";
 import Modal from "../../components/modal";
 import ProfileEditor from "../../components/profile/ProfileEditor";
 import { useSession } from "../../hooks/queryHooks/useSession";
-import type { ServerSideProps } from "../../pages/users/[id]";
+import type { ServerSideProps } from "../../pages/[bobId]";
 
 type Props = ServerSideProps["profile"];
 
-const ProfileContainer = ({ isOwner, name, image, posts, visits, title, description }: Props) => {
+const ProfileContainer = ({
+  isOwner,
+  name,
+  image,
+  posts,
+  visits,
+  title,
+  description,
+  bobId,
+}: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const [session] = useSession();
 
   return (
@@ -22,6 +30,7 @@ const ProfileContainer = ({ isOwner, name, image, posts, visits, title, descript
 
         <ProfileTextContainer>
           <Name>{name}</Name>
+          <UserId>@{bobId}</UserId>
           <span>포스트 </span>
           <BoldContent>{posts}</BoldContent>
           <span style={{ marginLeft: 30 }}>방문한 곳 </span>
@@ -42,7 +51,7 @@ const ProfileContainer = ({ isOwner, name, image, posts, visits, title, descript
   );
 };
 
-const Container = styled.div`
+const Container = styled.section`
   width: 680px;
   display: flex;
   flex-direction: row;
@@ -68,6 +77,13 @@ const Name = styled.span`
   font-weight: bold;
   font-size: 1.2rem;
   margin-bottom: 15px;
+`;
+
+const UserId = styled.span`
+  display: block;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+  color: ${({ theme }) => theme.text.monochrome_3};
 `;
 
 const BoldContent = styled.span`

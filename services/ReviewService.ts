@@ -2,9 +2,11 @@ import { DefaultResponse } from "./../apis/types";
 import { PresignedUrlResponse } from "./../pages/api/images/presigned-url";
 import axios, { AxiosInstance } from "axios";
 
-interface UploadReviewArgs {
+export interface UploadReviewArgs {
   title: string;
+  titleLink: string;
   content: string;
+  preview: string;
   images: string[];
   userId: string;
   restaurantId: string;
@@ -30,14 +32,18 @@ class ReviewService {
 
   public uploadReview = async ({
     title,
+    titleLink,
     content,
+    preview,
     images,
     userId,
     restaurantId,
   }: UploadReviewArgs) => {
     const { data } = await this.api.post<DefaultResponse>("/api/posts/reviews", {
       title,
+      titleLink,
       content,
+      preview,
       images,
       userId,
       restaurantId,

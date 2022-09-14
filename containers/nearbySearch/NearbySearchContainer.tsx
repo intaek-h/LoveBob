@@ -13,7 +13,15 @@ const NearbySearchContainer = () => {
   const [coords, setCoords] = useState<Coords>();
   const [restaurants, setRestaurants] = useState<Restaurant[]>();
 
-  if (restaurants) return <NearbyRestaurants restaurants={restaurants} />;
+  const resetSearch = () => {
+    setCoords(undefined);
+    setRestaurants(undefined);
+  };
+
+  if (restaurants)
+    return (
+      <NearbyRestaurants restaurants={restaurants} address={coords?.address} reset={resetSearch} />
+    );
 
   return <NearbySearch coords={coords} setCoords={setCoords} setRestaurants={setRestaurants} />;
 };

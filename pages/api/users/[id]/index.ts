@@ -23,26 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
   const id = req.query.id as string;
 
-  // if (req.method === "POST" && req.body.type === "visited-restaurant") {
-  //   try {
-  //     const restaurantId = req.body.id;
-
-  //     await prisma.visitedRestaurants.create({
-  //       data: {
-  //         restaurantId,
-  //         userId: id,
-  //       },
-  //     });
-
-  //     res.status(200).json({ success: true });
-  //   } catch (error) {
-  //     res.status(400).json({ success: false });
-  //   }
-
-  //   return;
-  // }
-
-  if (req.method === "PUT" && req.body.type === "description") {
+  if (req.method === "PATCH" && req.body.type === "description") {
     try {
       const queries: Queries = {};
 
@@ -67,7 +48,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return;
   }
 
-  if (req.method === "PUT" && req.body.type === "image") {
+  if (req.method === "PATCH" && req.body.type === "image") {
     try {
       const session = await unstable_getServerSession(req, res, authOptions);
 

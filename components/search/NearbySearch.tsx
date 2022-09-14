@@ -1,4 +1,3 @@
-import axios from "axios";
 import { ChangeEvent, Dispatch, FormEvent, SetStateAction, useState } from "react";
 import styled from "styled-components";
 import { Coords } from "../../containers/nearbySearch/NearbySearchContainer";
@@ -69,12 +68,11 @@ const NearbySearch = ({ coords, setCoords, setRestaurants }: Props) => {
         <SearchButton>검색</SearchButton>
       </Form>
       <ResultContainer>
-        {results &&
-          results.map((result, i) => (
-            <AddressContainer key={i} onClick={() => setCoords(result)}>
-              <Address selected={coords?.address === result.address}>{result.address}</Address>
-            </AddressContainer>
-          ))}
+        {results?.map((result, i) => (
+          <AddressContainer key={i} onClick={() => setCoords(result)}>
+            <Address selected={coords?.address === result.address}>{result.address}</Address>
+          </AddressContainer>
+        ))}
       </ResultContainer>
       <NextButton onClick={handleNextButtonClick} disabled={!!!coords}>
         다음
@@ -106,7 +104,13 @@ const ResultContainer = styled.div`
 `;
 
 const AddressContainer = styled.div`
-  padding: 10px 0;
+  padding: 10px 5px;
+  margin-bottom: 5px;
+  border-radius: 2px;
+  cursor: pointer;
+  :hover {
+    background-color: ${({ theme }) => theme.element.placeholder};
+  }
 `;
 
 const Address = styled.span<AddressProp>`
@@ -115,7 +119,6 @@ const Address = styled.span<AddressProp>`
     ${({ theme, selected }) =>
       selected ? theme.element.green_prism_3 : theme.element.monochrome_3};
   padding-left: 8px;
-  cursor: pointer;
 
   :hover {
     border-left: 2px solid ${({ theme }) => theme.element.green_prism_3};
