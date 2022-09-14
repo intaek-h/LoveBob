@@ -156,7 +156,7 @@ const GuideContainer = styled.div`
 const SearchAddress = styled.span`
   font-size: 1.3rem;
   font-weight: bold;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
 `;
 
 const Guide = styled.span`

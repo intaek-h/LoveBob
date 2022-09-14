@@ -77,8 +77,6 @@ const VisitedRestaurantsContainer = ({
       type: "success",
     });
 
-  const router = useRouter();
-
   const handleNextClick = () => {
     if (restaurants && startIdx + RESTAURANT_LIMIT >= restaurants.length) return;
 
