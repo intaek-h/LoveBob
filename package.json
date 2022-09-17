@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.2.21",
+    "@amcharts/amcharts5-geodata": "^5.0.3",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@lexical/html": "^0.3.11",

@@ -10,6 +10,7 @@ export const useVisitedRestaurants = (userId: string, options?: Options) => {
     ["visited-restaurants", userId],
     ProfileService.getVisitedRestaurants(userId),
     {
+      refetchOnWindowFocus: false,
       ...options,
     }
   );
