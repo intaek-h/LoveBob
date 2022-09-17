@@ -9,7 +9,6 @@ import useDeleteFavoriteRestaurant from "../../hooks/queryHooks/useDeleteFavorit
 import { useVisitedRestaurants } from "../../hooks/queryHooks/useVisitedRestaurants";
 import { Restaurant } from "../../pages/api/users/[id]/visits";
 import { ServerSideProps, WrittenReviews } from "../../pages/[bobId]";
-import empty_heart from "../../public/images/icons/empty-heart.svg";
 import full_heart from "../../public/images/icons/full-heart.svg";
 
 interface Props {
@@ -126,13 +125,6 @@ const FavoriteRestaurantContainer = ({
                     <PostCount>{restaurant.posts} 개의 후기</PostCount>
                   </div>
                   <div>
-                    {writtenReview && (
-                      <ReadReviewButton
-                        onClick={handleReadReviewClick(`/@${bobId}/${writtenReview.titleLink}`)}
-                      >
-                        리뷰 보기
-                      </ReadReviewButton>
-                    )}
                     {isOwner && !writtenReview && (
                       <WriteButton onClick={handleWriteButtonClick(restaurant.name, restaurant.id)}>
                         글 쓰기
@@ -154,6 +146,14 @@ const FavoriteRestaurantContainer = ({
                     )}
                   </HeartContainer>
                 </Details>
+                {writtenReview && (
+                  <ReadReviewButton
+                    onClick={handleReadReviewClick(`/@${bobId}/${writtenReview.titleLink}`)}
+                  >
+                    <span>리뷰: </span>
+                    {writtenReview.title}
+                  </ReadReviewButton>
+                )}
               </RestaurantContainer>
             );
           })
@@ -220,15 +220,23 @@ const WriteButton = styled.button`
   cursor: pointer;
 `;
 
-const ReadReviewButton = styled.button`
-  appearance: none;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0 5px;
-  text-decoration: underline;
-  color: ${({ theme }) => theme.text.monochrome_4};
+const ReadReviewButton = styled.span`
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 10px;
+  font-style: italic;
+  color: ${({ theme }) => theme.text.monochrome_5};
   cursor: pointer;
+
+  :hover {
+    text-decoration: underline;
+  }
+
+  & > span {
+    font-style: normal;
+  }
 `;
 
 const Details = styled.div`
