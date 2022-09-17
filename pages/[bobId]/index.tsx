@@ -150,7 +150,7 @@ const UserPage = ({ profile, reviews }: ServerSideProps) => {
         <PostListContainer reviews={reviews} username={profile.name} bobId={profile.bobId} />
       </LeftContainer>
       <RightContainer>
-        <MapChartContainer />
+        <MapChartContainer userId={profile.userId} />
         <Line marginTop={20} marginBot={20} />
         <FavoriteRestaurantContainer
           writtenReviews={writtenReviews}

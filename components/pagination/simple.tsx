@@ -1,4 +1,7 @@
+import Image from "next/image";
 import styled from "styled-components";
+import arrow_forward from "../../public/images/icons/arrow-forward.svg";
+import arrow_back from "../../public/images/icons/arrow-back.svg";
 
 interface Props {
   currentIndex: number;
@@ -25,10 +28,10 @@ const SimplePagination = ({
         <PageCount>(0 / 0)</PageCount>
       )}
       <PaginateButton onClick={toPrevPage}>
-        <span className="material-symbols-outlined">arrow_back_ios_new</span>
+        <Image src={arrow_back} width={30} height={30} alt="next-page" />
       </PaginateButton>
       <PaginateButton onClick={toNextPage}>
-        <span className="material-symbols-outlined">arrow_forward_ios</span>
+        <Image src={arrow_forward} width={30} height={30} alt="previous-page" />
       </PaginateButton>
     </PaginateContainer>
   );
@@ -45,22 +48,15 @@ const PageCount = styled.span`
   color: ${({ theme }) => theme.text.monochrome_3};
 `;
 
-const PaginateButton = styled.button`
-  appearance: none;
-  border: none;
-  background: none;
-  padding: 0;
+const PaginateButton = styled.div`
+  width: 35px;
+  height: 30px;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
 
-  & > span {
-    color: ${({ theme }) => theme.text.monochrome_2};
-    font-weight: bold;
-    padding: 3px 5px;
-    border-radius: 4px;
-    cursor: pointer;
-
-    :hover {
-      background-color: ${({ theme }) => theme.element.hover_light};
-    }
+  :hover {
+    background-color: ${({ theme }) => theme.element.hover_light};
   }
 `;
 

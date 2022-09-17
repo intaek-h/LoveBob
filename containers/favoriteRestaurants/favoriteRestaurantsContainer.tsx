@@ -36,16 +36,18 @@ const FavoriteRestaurantContainer = ({
   const [restaurants, setRestaurants] = useState<Restaurant[]>();
   const [message, setMessage] = useState("");
 
+  restaurants?.sort((a, b) => b.addedDate - a.addedDate);
+
   useVisitedRestaurants(userId, {
     onSuccess: (res) => {
       if (res.result) {
         const favoriteRestaurants = res.result.filter((restaurant) => restaurant.isFavorite);
 
-        if (favoriteRestaurants.length) {
-          return setRestaurants(favoriteRestaurants);
-        }
+        setRestaurants(favoriteRestaurants);
 
-        setMessage(`${userName} 님은 아직 맛집을 찾지 못했어요.. ( ˘︹˘ )`);
+        if (!favoriteRestaurants.length) {
+          setMessage(`${userName} 님은 아직 맛집을 찾지 못했어요.. ( ˘︹˘ )`);
+        }
       }
     },
   });
@@ -58,8 +60,6 @@ const FavoriteRestaurantContainer = ({
       queryClient.invalidateQueries(["visited-restaurants", userId]);
     },
   });
-
-  restaurants?.sort((a, b) => b.addedDate - a.addedDate);
 
   const alertDeleteSuccess = () =>
     toast("맛집 리스트에서 삭제했어요", {

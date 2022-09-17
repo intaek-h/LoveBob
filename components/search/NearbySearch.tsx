@@ -3,11 +3,11 @@ import styled from "styled-components";
 import { Coords } from "../../containers/nearbySearch/NearbySearchContainer";
 import KakaoMapService from "../../services/KakaoMapService";
 import { TitleInput } from "../../styled-components/inputs";
-import RestaurantService, { Restaurant } from "../../services/RestaurantService";
+import RestaurantService, { NearbyRestaurant } from "../../services/RestaurantService";
 
 interface Props {
   coords: Coords | undefined;
-  setRestaurants: Dispatch<SetStateAction<Restaurant[] | undefined>>;
+  setRestaurants: Dispatch<SetStateAction<NearbyRestaurant[] | undefined>>;
   setCoords: Dispatch<SetStateAction<Coords | undefined>>;
 }
 
