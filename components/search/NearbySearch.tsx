@@ -4,6 +4,8 @@ import { Coords } from "../../containers/nearbySearch/NearbySearchContainer";
 import KakaoMapService from "../../services/KakaoMapService";
 import { TitleInput } from "../../styled-components/inputs";
 import RestaurantService, { NearbyRestaurant } from "../../services/RestaurantService";
+import { PaddedButton } from "../../styled-components/buttons";
+import { darken } from "polished";
 
 interface Props {
   coords: Coords | undefined;
@@ -74,9 +76,9 @@ const NearbySearch = ({ coords, setCoords, setRestaurants }: Props) => {
           </AddressContainer>
         ))}
       </ResultContainer>
-      <NextButton onClick={handleNextButtonClick} disabled={!!!coords}>
+      <Button onClick={handleNextButtonClick} disabled={!!!coords}>
         다음
-      </NextButton>
+      </Button>
     </div>
   );
 };
@@ -125,18 +127,20 @@ const Address = styled.span<AddressProp>`
   }
 `;
 
-const NextButton = styled.button`
-  appearance: none;
-  border: none;
-  border-radius: 4px;
-  background-color: ${({ theme }) => theme.element.green_prism_4};
+const Button = styled(PaddedButton)`
   width: 200px;
-  padding: 10px;
-  color: ${({ theme }) => theme.element.monochrome_1};
-  cursor: pointer;
+  height: 35px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background-color: ${({ theme }) => theme.element.green_prism_3};
+  color: ${({ theme }) => theme.text.monochrome_1};
+
+  :hover {
+    background-color: ${({ theme }) => darken(0.05, theme.element.green_prism_3)};
+  }
 
   :disabled {
-    background-color: ${({ theme }) => theme.element.placeholder};
+    background-color: ${({ theme }) => theme.element.monochrome_2};
   }
 `;
 

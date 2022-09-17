@@ -25,7 +25,7 @@ export default function CustomizedAccordions({ title, children }: Props & Accord
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
+  border: `1px solid #347fff`,
   borderRadius: 3,
 
   "&:not(:last-child)": {
@@ -39,10 +39,15 @@ const Accordion = styled((props: AccordionProps) => (
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem", color: "#347fff" }} />}
+    style={{
+      backgroundColor: "#ecf9ff",
+      borderRadius: 3,
+    }}
     {...props}
   />
 ))(({ theme }) => ({
+  minHeight: 0,
   backgroundColor:
     theme.palette.mode === "dark" ? "rgba(255, 255, 255, .05)" : "rgba(0, 0, 0, .03)",
   flexDirection: "row-reverse",
@@ -52,7 +57,9 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
   },
 
   "& .MuiAccordionSummary-content": {
+    margin: "8px 0",
     marginLeft: theme.spacing(1),
+    color: "#347fff",
   },
 }));
 

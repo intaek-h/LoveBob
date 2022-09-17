@@ -21,7 +21,8 @@ type Params = {
 export type WrittenReviews = {
   id: string;
   restaurantId: string;
-  titleLink: any;
+  titleLink: string;
+  title: string;
 }[];
 
 export const getServerSideProps = async (context: GetServerSidePropsContext<Params>) => {
@@ -82,20 +83,46 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     };
   }
 
-  const filteredReviews = user?.Reviews.map((review) => ({
-    id: review.id,
-    title: review.title,
-    titleLink: review.titleLink,
-    imageUrl: review.ReviewImages[0].urls.split(",")[0],
-    preview: review.preview,
-    restaurant:
-      `${review.restaurant.poi_nm} ${review.restaurant.branch_nm} ${review.restaurant.sub_nm}`.trim(),
-    restaurantId: review.restaurantId,
-    createdAt: review.createdAt.getTime(),
-    likeCount: review._count.ReviewLikes,
-    commentCount: review._count.ReviewComments,
-    type: "식당 리뷰",
-  }));
+  const filteredReviews = user?.Reviews.map((review, i) => {
+    if (
+      user.VisitedRestaurants.some(
+        (restaurant) =>
+          restaurant.restaurantId === review.restaurantId && restaurant.isFavorite === true
+      )
+    ) {
+      return {
+        id: review.id,
+        title: review.title,
+        titleLink: review.titleLink,
+        imageUrl: review.ReviewImages[0].urls.split(",")[0],
+        preview: review.preview,
+        restaurant:
+          `${review.restaurant.poi_nm} ${review.restaurant.branch_nm} ${review.restaurant.sub_nm}`.trim(),
+        restaurantId: review.restaurantId,
+        createdAt: review.createdAt.getTime(),
+        likeCount: review._count.ReviewLikes,
+        commentCount: review._count.ReviewComments,
+        type: "식당 리뷰",
+        isFavorite: true,
+      };
+    }
+
+    return {
+      id: review.id,
+      title: review.title,
+      titleLink: review.titleLink,
+      imageUrl: review.ReviewImages[0].urls.split(",")[0],
+      preview: review.preview,
+      restaurant:
+        `${review.restaurant.poi_nm} ${review.restaurant.branch_nm} ${review.restaurant.sub_nm}`.trim(),
+      restaurantId: review.restaurantId,
+      createdAt: review.createdAt.getTime(),
+      likeCount: review._count.ReviewLikes,
+      commentCount: review._count.ReviewComments,
+      type: "식당 리뷰",
+      isFavorite: false,
+    };
+  });
 
   const props = {
     profile: {
@@ -124,6 +151,7 @@ const UserPage = ({ profile, reviews }: ServerSideProps) => {
     id: review.id,
     restaurantId: review.restaurantId,
     titleLink: review.titleLink,
+    title: review.title,
   }));
 
   const title = `${profile.name} (@${profile.bobId})`;

@@ -2,7 +2,6 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { Fragment } from "react";
 import styled from "styled-components";
-import { useSession } from "../../hooks/queryHooks/useSession";
 import { ServerSideProps } from "../../pages/[bobId]";
 import { Line } from "../../styled-components/etc";
 import { formatDate } from "../../utils/formatDate";
@@ -40,7 +39,15 @@ const PostListContainer = ({ reviews, username, bobId }: Props) => {
               <TextContainer onClick={() => handleClick(`/@${bobId}/${review.titleLink}`)}>
                 <TitleContainer>
                   {review.type === "식당 리뷰" && (
-                    <RestaurantAddress>{review.restaurant}</RestaurantAddress>
+                    <RestaurantAddress>
+                      {review.restaurant}
+                      {review.isFavorite && (
+                        <FavoriteTag>
+                          {" "}
+                          · 맛집 <Check className="material-symbols-outlined">check</Check>
+                        </FavoriteTag>
+                      )}
+                    </RestaurantAddress>
                   )}
                   <Title>{review.title}</Title>
                   <Preview>{review.preview}</Preview>
@@ -107,6 +114,16 @@ const RestaurantAddress = styled.span`
   font-size: 0.8rem;
   color: ${({ theme }) => theme.text.highlight_green};
   margin-bottom: 4px;
+`;
+
+const FavoriteTag = styled.span`
+  color: ${({ theme }) => theme.text.highlight_blue};
+`;
+
+const Check = styled.span`
+  font-size: 0.8rem;
+  font-weight: 700;
+  vertical-align: top;
 `;
 
 const Title = styled.span`
