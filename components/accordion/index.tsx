@@ -6,14 +6,15 @@ import ArrowForwardIosSharpIcon from "@mui/icons-material/ArrowForwardIosSharp";
 
 interface Props {
   children?: React.ReactNode;
+  title: string;
 }
 
-export default function CustomizedAccordions({ children }: Props) {
+export default function CustomizedAccordions({ title, children }: Props & AccordionProps) {
   return (
     <div>
       <Accordion>
         <AccordionSummary>
-          <span>주변 음식점 확인하기</span>
+          <span>{title}</span>
         </AccordionSummary>
         <AccordionDetails>{children}</AccordionDetails>
       </Accordion>
@@ -24,7 +25,7 @@ export default function CustomizedAccordions({ children }: Props) {
 const Accordion = styled((props: AccordionProps) => (
   <MuiAccordion disableGutters elevation={0} square {...props} />
 ))(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
+  border: `1px solid #347fff`,
   borderRadius: 3,
 
   "&:not(:last-child)": {
@@ -38,10 +39,15 @@ const Accordion = styled((props: AccordionProps) => (
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
   <MuiAccordionSummary
-    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem" }} />}
+    expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: "0.9rem", color: "#347fff" }} />}
+    style={{
+      backgroundColor: "#ecf9ff",
+      borderRadius: 3,
+    }}
     {...props}
   />
 ))(({ theme }) => ({
+  minHeight: 0,
   backgroundColor:
     theme.palette.mode === "dark" ? "rgba(255, 255, 255, .05)" : "rgba(0, 0, 0, .03)",
   flexDirection: "row-reverse",
@@ -51,11 +57,12 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
   },
 
   "& .MuiAccordionSummary-content": {
+    margin: "8px 0",
     marginLeft: theme.spacing(1),
+    color: "#347fff",
   },
 }));
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
-  borderTop: "1px solid rgba(0, 0, 0, .125)",
 }));

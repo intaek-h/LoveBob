@@ -1,4 +1,4 @@
-import { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosInstance } from "axios";
 import { kakaoMapApi } from "../apis/kakao";
 import { AddressToCoords } from "../apis/kakao/types";
 

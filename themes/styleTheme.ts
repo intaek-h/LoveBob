@@ -9,6 +9,8 @@ export const lightTheme = {
     monochrome_3: "#afafaf",
     monochrome_4: "#777777",
     monochrome_5: "#525252",
+    blue_prism_1: "#347fff",
+    blue_prism_2: "#1A73E8",
   },
   element: {
     placeholder: "#EFEFEF",
@@ -24,6 +26,8 @@ export const lightTheme = {
     green_prism_2: "#dbede0",
     green_prism_3: "#0ea100",
     green_prism_4: "#2da44e",
+    blue_prism_1: "#ecf9ff",
+    blue_prism_4: "#004fd2",
   },
 };
 

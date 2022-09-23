@@ -6,7 +6,7 @@ import TitleInput from "../../components/editorPlugins/TitleInput";
 import UploadButton from "../../components/reviewEditor/UploadButton";
 import EditorContainer, { editorConfig } from "../../containers/editor/EditorContainer";
 import MultipleImageUploader from "../../containers/multipleImageUploader";
-import { Line } from "../users/[id]";
+import { Line } from "../../styled-components/etc";
 
 const NewPostPage: NextPage = () => {
   const { query } = useRouter();
@@ -31,7 +31,7 @@ const NewPostPage: NextPage = () => {
         </LeftContainer>
         <RightContainer>
           <UploadButton restaurantId={restaurantId} />
-          <Line margin={20} />
+          <Line marginBot={20} marginTop={20} />
           <MultipleImageUploader restaurantId={restaurantId} />
         </RightContainer>
       </Body>
@@ -42,7 +42,7 @@ const NewPostPage: NextPage = () => {
 const Body = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-bottom: 60px;
+  margin: 60px 0;
 `;
 
 const RestaurantName = styled.h1`
@@ -55,7 +55,7 @@ const LeftContainer = styled.div`
 `;
 
 const RightContainer = styled.div`
-  padding-top: 40px;
+  padding-top: 60px;
   width: 300px;
 `;
 

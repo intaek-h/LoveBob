@@ -16,6 +16,10 @@ export const TitleInput = styled.input`
   &:not(:focus) {
     background-color: ${({ theme }) => theme.element.input_blur};
   }
+
+  ::placeholder {
+    color: ${({ theme }) => theme.text.monochrome_3};
+  }
 `;
 
 export const InputContainer = styled.div`

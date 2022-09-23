@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@amcharts/amcharts5": "^5.2.21",
+    "@amcharts/amcharts5-geodata": "^5.0.3",
     "@emotion/react": "^11.10.0",
     "@emotion/styled": "^11.10.0",
     "@lexical/html": "^0.3.11",
@@ -30,6 +32,8 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.34.2",
     "react-toastify": "^9.0.8",
+    "sanitize-html": "^2.7.1",
+    "short-uuid": "^4.2.0",
     "styled-components": "^5.3.5",
     "styled-normalize": "^8.0.7",
     "uuid": "^9.0.0",
@@ -39,11 +43,13 @@
     "@types/node": "^18.7.2",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
+    "@types/sanitize-html": "^2.6.2",
     "@types/styled-components": "^5.1.26",
     "@types/uuid": "^8.3.4",
     "eslint": "8.21.0",
     "eslint-config-next": "12.2.5",
     "eslint-config-prettier": "^8.5.0",
+    "infer-next-props-type": "^0.0.4",
     "prisma": "^4.3.1",
     "ts-node": "^10.9.1",
     "typescript": "^4.7.4"

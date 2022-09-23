@@ -2,10 +2,10 @@ import axios, { AxiosInstance } from "axios";
 
 export interface RestaurantsResponse {
   success: boolean;
-  result: Restaurant[];
+  result: NearbyRestaurant[];
 }
 
-export interface Restaurant {
+export interface NearbyRestaurant {
   id: string;
   building_number: string;
   name: string;
