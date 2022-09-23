@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { ServerSideProps } from "../../pages/[bobId]";
 import { Line } from "../../styled-components/etc";
 import { formatDate } from "../../utils/formatDate";
+import { generateResizedUrl } from "../../utils/generateResizedUrl";
 
 interface Props {
   reviews: ServerSideProps["reviews"];
@@ -42,7 +43,7 @@ const PostListContainer = ({ reviews, username, bobId }: Props) => {
                     <RestaurantAddress>
                       {review.restaurant}
                       {review.isFavorite && (
-                        <FavoriteTag>
+                        <FavoriteTag title={`${username} 님이 선택한 맛집입니다`}>
                           {" "}
                           · 맛집 <Check className="material-symbols-outlined">check</Check>
                         </FavoriteTag>
@@ -65,7 +66,7 @@ const PostListContainer = ({ reviews, username, bobId }: Props) => {
               {review.imageUrl ? (
                 <ThumbnailContainer>
                   <Thumbnail
-                    src={review.imageUrl}
+                    src={generateResizedUrl(review.imageUrl, "medium")}
                     alt="preview-image"
                     width="100px"
                     height="100px"

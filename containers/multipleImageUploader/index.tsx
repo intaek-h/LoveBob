@@ -13,6 +13,7 @@ interface Props {
 
 const MAX_IMAGE_COUNT = 5;
 const MAX_SINGLE_IMAGE_SIZE = 5000000;
+const IMAGE_RESIZE_QUALITY = 0.8; // 0 ~ 1
 
 const MultipleImageUploader = ({ restaurantId }: Props) => {
   const images = useBoundStore((state) => state.images);
@@ -126,7 +127,7 @@ function transformImage(image: HTMLImageElement) {
 
   ctx.drawImage(image, 0, 0);
 
-  const transformedImage = canvas.toDataURL("image/webp", 0.9);
+  const transformedImage = canvas.toDataURL("image/webp", IMAGE_RESIZE_QUALITY);
   const imageBuffer = Buffer.from(
     transformedImage.replace(/^data:image\/\w+;base64,/, ""),
     "base64"
