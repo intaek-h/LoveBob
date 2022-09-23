@@ -98,7 +98,10 @@ const FavoriteRestaurantContainer = ({
     <Container>
       <Header>
         <div>
-          <strong>{userName}</strong> 님의 맛집 · {restaurants?.length} 곳 ·<Order> 등록순</Order>
+          <strong>{userName}</strong> 님이 추천하는 맛집 · {restaurants?.length} 곳 ·
+          <Order> 등록순</Order>
+          <br />
+          <Guide>지인에게 강력히 추천할 의향이 있음</Guide>
         </div>
         <SimplePagination
           currentIndex={startIdx}
@@ -191,6 +194,14 @@ const RestaurantContainer = styled.div`
 `;
 
 const Order = styled.span`
+  color: ${({ theme }) => theme.text.monochrome_4};
+`;
+
+const Guide = styled.span`
+  display: block;
+  margin-top: 5px;
+  font-size: 0.8rem;
+  font-style: italic;
   color: ${({ theme }) => theme.text.monochrome_4};
 `;
 

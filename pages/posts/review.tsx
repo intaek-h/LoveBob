@@ -42,7 +42,7 @@ const NewPostPage: NextPage = () => {
 const Body = styled.div`
   display: flex;
   justify-content: space-around;
-  margin-bottom: 60px;
+  margin: 60px 0;
 `;
 
 const RestaurantName = styled.h1`
@@ -55,7 +55,7 @@ const LeftContainer = styled.div`
 `;
 
 const RightContainer = styled.div`
-  padding-top: 40px;
+  padding-top: 60px;
   width: 300px;
 `;
 

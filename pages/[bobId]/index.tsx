@@ -83,59 +83,39 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     };
   }
 
-  const filteredReviews = user?.Reviews.map((review, i) => {
-    if (
-      user.VisitedRestaurants.some(
-        (restaurant) =>
-          restaurant.restaurantId === review.restaurantId && restaurant.isFavorite === true
-      )
-    ) {
-      return {
-        id: review.id,
-        title: review.title,
-        titleLink: review.titleLink,
-        imageUrl: review.ReviewImages[0].urls.split(",")[0],
-        preview: review.preview,
-        restaurant:
-          `${review.restaurant.poi_nm} ${review.restaurant.branch_nm} ${review.restaurant.sub_nm}`.trim(),
-        restaurantId: review.restaurantId,
-        createdAt: review.createdAt.getTime(),
-        likeCount: review._count.ReviewLikes,
-        commentCount: review._count.ReviewComments,
-        type: "식당 리뷰",
-        isFavorite: true,
-      };
-    }
+  const profile = {
+    isOwner: user.id === session?.user.id,
+    userId: user.id,
+    bobId: user.bobId,
+    name: user.nickname,
+    image: user.image,
+    title: user.title,
+    description: user.description,
+    visits: user.VisitedRestaurants.length,
+    posts: user.Reviews.length,
+  };
 
-    return {
-      id: review.id,
-      title: review.title,
-      titleLink: review.titleLink,
-      imageUrl: review.ReviewImages[0].urls.split(",")[0],
-      preview: review.preview,
-      restaurant:
-        `${review.restaurant.poi_nm} ${review.restaurant.branch_nm} ${review.restaurant.sub_nm}`.trim(),
-      restaurantId: review.restaurantId,
-      createdAt: review.createdAt.getTime(),
-      likeCount: review._count.ReviewLikes,
-      commentCount: review._count.ReviewComments,
-      type: "식당 리뷰",
-      isFavorite: false,
-    };
-  });
+  const filteredReviews = user?.Reviews.map((review, i) => ({
+    id: review.id,
+    title: review.title,
+    titleLink: review.titleLink,
+    imageUrl: review.ReviewImages[0].urls.split(",")[0],
+    preview: review.preview,
+    restaurant:
+      `${review.restaurant.poi_nm} ${review.restaurant.branch_nm} ${review.restaurant.sub_nm}`.trim(),
+    restaurantId: review.restaurantId,
+    createdAt: review.createdAt.getTime(),
+    likeCount: review._count.ReviewLikes,
+    commentCount: review._count.ReviewComments,
+    type: "식당 리뷰",
+    isFavorite: user.VisitedRestaurants.some(
+      (restaurant) =>
+        restaurant.restaurantId === review.restaurantId && restaurant.isFavorite === true
+    ),
+  }));
 
   const props = {
-    profile: {
-      isOwner: user.id === session?.user.id,
-      userId: user.id,
-      bobId: user.bobId,
-      name: user.nickname,
-      image: user.image,
-      title: user.title,
-      description: user.description,
-      visits: user.VisitedRestaurants.length,
-      posts: user.Reviews.length,
-    },
+    profile,
     reviews: filteredReviews,
   };
 
@@ -160,6 +140,12 @@ const UserPage = ({ profile, reviews }: ServerSideProps) => {
     <Body>
       <Head>
         <title>{title}</title>
+        <meta property="og:title" content={profile.name!} />
+        <meta property="og:description" content={profile.title!} />
+        <meta property="og:site_name" content="밥사랑 한마음" />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={profile.image!} />
+        <meta property="og:url" content={`http://localhost:3000/@${profile.bobId}`} />
       </Head>
       <LeftContainer>
         <ProfileContainer {...profile} />

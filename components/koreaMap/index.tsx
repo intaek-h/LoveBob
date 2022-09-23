@@ -107,7 +107,7 @@ const KoreaMap = ({ userId }: Props) => {
     visitedRestaurantPointSeries.data.setAll(visitedRestaurants);
 
     // 지도 위에 띄울 맛집 마커
-    const FavoriteRestaurantPointSeries = chart.series.push(
+    const favoriteRestaurantPointSeries = chart.series.push(
       am5map.MapPointSeries.new(root, {
         latitudeField: "x",
         longitudeField: "y",
@@ -115,7 +115,7 @@ const KoreaMap = ({ userId }: Props) => {
     );
 
     // 맛집 좌표 데이터 주입
-    FavoriteRestaurantPointSeries.data.setAll(favoriteRestaurants);
+    favoriteRestaurantPointSeries.data.setAll(favoriteRestaurants);
 
     // 마커 모양별 템플릿 생성
     const triangleTemplate: am5.Template<am5.Triangle> = am5.Template.new({});
@@ -149,7 +149,7 @@ const KoreaMap = ({ userId }: Props) => {
     });
 
     // 맛집 마커 커스터마이징
-    FavoriteRestaurantPointSeries.bullets.push(function (root, _series, dataItem) {
+    favoriteRestaurantPointSeries.bullets.push(function (root, _series, dataItem) {
       const triangleBullet = am5.Triangle.new(
         root,
         {
@@ -179,13 +179,36 @@ const KoreaMap = ({ userId }: Props) => {
     };
   }, [favoriteRestaurants, visitedRestaurants]);
 
-  return <MapContainer id="chartdiv"></MapContainer>;
+  return (
+    <MapContainer id="chartdiv">
+      <DescriptionContainer>
+        <Description>
+          거점: <i>서울 · 제주도</i>
+        </Description>
+      </DescriptionContainer>
+    </MapContainer>
+  );
 };
 
 const MapContainer = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+`;
+
+const DescriptionContainer = styled.div`
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  text-align: center;
+  padding: 5px;
+`;
+
+const Description = styled.span`
+  font-size: 0.8rem;
+  & > strong {
+    color: ${({ theme }) => theme.text.blue_prism_1};
+  }
 `;
 
 export default KoreaMap;

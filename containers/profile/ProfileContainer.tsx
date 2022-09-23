@@ -35,8 +35,9 @@ const ProfileContainer = ({
           <BoldContent>{posts}</BoldContent>
           <span style={{ marginLeft: 30 }}>방문한 곳 </span>
           <BoldContent>{visits}</BoldContent>
-          <Title>{title}</Title>
-          <Description>{description}</Description>
+          <div>
+            <Title>{title}</Title>
+          </div>
         </ProfileTextContainer>
         {isOwner && session && (
           <>
@@ -47,6 +48,11 @@ const ProfileContainer = ({
           </>
         )}
       </Container>
+      {description && (
+        <DescriptionContainer>
+          <p>{`"${description}"`}</p>
+        </DescriptionContainer>
+      )}
     </>
   );
 };
@@ -92,23 +98,39 @@ const BoldContent = styled.span`
   font-weight: 500;
 `;
 
-const Title = styled.span`
+const Title = styled.p`
   display: block;
   font-weight: bold;
+  margin: 0;
   margin-bottom: 10px;
-`;
-
-const Description = styled.span`
-  line-height: 1.6rem;
 `;
 
 const Setting = styled.span`
   position: absolute;
   top: 5px;
   right: 5px;
-  font-size: 0.9rem;
-  color: #b8b8b8;
+  font-size: 0.95rem;
+  color: ${({ theme }) => theme.text.monochrome_3};
   cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const DescriptionContainer = styled.div`
+  display: flex;
+  align-items: center;
+  height: 40px;
+  border-radius: 3px;
+  padding-left: 10px;
+  font-style: italic;
+  background-color: ${({ theme }) => theme.element.green_prism_1};
+  color: ${({ theme }) => theme.text.monochrome_4};
+
+  & > p {
+    margin: 0;
+  }
 `;
 
 export default ProfileContainer;
