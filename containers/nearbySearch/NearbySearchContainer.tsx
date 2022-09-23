@@ -1,7 +1,7 @@
 import { useState } from "react";
 import NearbyRestaurants from "../../components/search/NearbyRestaurants";
 import NearbySearch from "../../components/search/NearbySearch";
-import { Restaurant } from "../../services/RestaurantService";
+import { NearbyRestaurant } from "../../services/RestaurantService";
 
 export interface Coords {
   address: string;
@@ -11,7 +11,7 @@ export interface Coords {
 
 const NearbySearchContainer = () => {
   const [coords, setCoords] = useState<Coords>();
-  const [restaurants, setRestaurants] = useState<Restaurant[]>();
+  const [restaurants, setRestaurants] = useState<NearbyRestaurant[]>();
 
   const resetSearch = () => {
     setCoords(undefined);

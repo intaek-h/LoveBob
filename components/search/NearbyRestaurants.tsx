@@ -4,7 +4,7 @@ import { useSession } from "../../hooks/queryHooks/useSession";
 import { useVisitedRestaurants } from "../../hooks/queryHooks/useVisitedRestaurants";
 import { ErrorMsg, SuccessMsg } from "../../styled-components/texts";
 import { useQueryClient } from "@tanstack/react-query";
-import { Restaurant } from "../../services/RestaurantService";
+import { NearbyRestaurant } from "../../services/RestaurantService";
 import useAddVisitedRestaurant from "../../hooks/queryHooks/useAddVisitedRestaurant";
 import useDeleteVisitedRestaurant from "../../hooks/queryHooks/useDeleteVisitedRestaurant";
 import { Coords } from "../../containers/nearbySearch/NearbySearchContainer";
@@ -12,7 +12,7 @@ import { Line } from "../../styled-components/etc";
 import SimplePagination from "../pagination/simple";
 
 interface Props {
-  restaurants?: Restaurant[];
+  restaurants?: NearbyRestaurant[];
   address: Coords["address"] | undefined;
   reset: () => void;
 }
