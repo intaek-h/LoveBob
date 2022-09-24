@@ -14,6 +14,14 @@ const Modal = ({ show, children }: Props) => {
     setIsBrowser(true);
   }, []);
 
+  useEffect(() => {
+    if (show) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [show]);
+
   const modalContent = show ? <Overlay>{children}</Overlay> : null;
 
   if (isBrowser) {
@@ -29,6 +37,7 @@ const Overlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 10;
   display: flex;
   justify-content: center;
   align-items: center;

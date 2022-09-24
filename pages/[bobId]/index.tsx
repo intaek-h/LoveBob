@@ -27,13 +27,13 @@ export type WrittenReviews = {
 
 export const getServerSideProps = async (context: GetServerSidePropsContext<Params>) => {
   const bobId = context.params?.bobId;
-  const filteredUserId = bobId?.slice(1);
+  const filteredBobId = bobId?.slice(1);
 
   const session = await unstable_getServerSession(context.req, context.res, authOptions);
 
   const user = await prisma.user.findFirst({
     where: {
-      bobId: filteredUserId,
+      bobId: filteredBobId,
     },
     include: {
       Reviews: {
@@ -83,6 +83,20 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     };
   }
 
+  let regions: string[] = [];
+
+  if (user.regions) {
+    const userRegions = await prisma.regions.findMany({
+      where: {
+        id: {
+          in: user.regions?.split(",").map(Number),
+        },
+      },
+    });
+
+    regions = userRegions.map((region) => region.region);
+  }
+
   const profile = {
     isOwner: user.id === session?.user.id,
     userId: user.id,
@@ -93,6 +107,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     description: user.description,
     visits: user.VisitedRestaurants.length,
     posts: user.Reviews.length,
+    regions,
   };
 
   const filteredReviews = user?.Reviews.map((review, i) => ({
@@ -164,7 +179,7 @@ const UserPage = ({ profile, reviews }: ServerSideProps) => {
         <PostListContainer reviews={reviews} username={profile.name} bobId={profile.bobId} />
       </LeftContainer>
       <RightContainer>
-        <MapChartContainer userId={profile.userId} />
+        <MapChartContainer userId={profile.userId} regions={profile.regions} />
         <Line marginTop={20} marginBot={20} />
         <FavoriteRestaurantContainer
           writtenReviews={writtenReviews}

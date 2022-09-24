@@ -4,14 +4,15 @@ import { ServerSideProps } from "../../pages/[bobId]";
 
 interface Props {
   userId: ServerSideProps["profile"]["userId"];
+  regions: ServerSideProps["profile"]["regions"];
 }
 
 const KoreaMap = dynamic(() => import("../../components/koreaMap"), { ssr: false });
 
-const MapChartContainer = ({ userId }: Props) => {
+const MapChartContainer = ({ userId, regions }: Props) => {
   return (
     <Container>
-      <KoreaMap userId={userId} />
+      <KoreaMap userId={userId} regions={regions} />
     </Container>
   );
 };

@@ -11,7 +11,7 @@ export interface OnboardResponse extends DefaultResponse {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<OnboardResponse>) {
-  const { id, bobId, nickname } = req.body as AddBobIdAndNickNameArgs;
+  const { id, bobId, nickname, regions } = req.body as AddBobIdAndNickNameArgs;
 
   if (!id || !bobId || !nickname) {
     return res.status(400).json({ success: false, message: "잘못된 요청입니다" });
@@ -25,6 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       data: {
         nickname,
         bobId,
+        regions: regions.join(),
       },
     });
 
