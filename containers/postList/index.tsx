@@ -1,24 +1,71 @@
+import { useInfiniteQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Fragment } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import useInfiniteReviews from "../../hooks/queryHooks/useInfiniteReviews";
 import { ServerSideProps } from "../../pages/[bobId]";
+import ReviewService from "../../services/ReviewService";
 import { Line } from "../../styled-components/etc";
 import { formatDate } from "../../utils/formatDate";
 import { generateResizedUrl } from "../../utils/generateResizedUrl";
 
 interface Props {
   reviews: ServerSideProps["reviews"];
+  totalReviews: number;
   username: ServerSideProps["profile"]["name"];
   bobId: ServerSideProps["profile"]["bobId"];
+  userId: ServerSideProps["profile"]["userId"];
+  isLastPage: ServerSideProps["pagination"]["isLastPage"];
 }
 
-const PostListContainer = ({ reviews, username, bobId }: Props) => {
+const PostListContainer = ({
+  reviews,
+  totalReviews,
+  username,
+  bobId,
+  userId,
+  isLastPage,
+}: Props) => {
   const router = useRouter();
 
-  const handleClick = (link: string) => {
-    router.push(link);
+  const [posts, setPosts] = useState(reviews);
+
+  const { data, hasNextPage, fetchNextPage } = useInfiniteReviews(bobId!, userId, {
+    enabled: !isLastPage,
+    getNextPageParam: (lastPage) => {
+      if (!lastPage.result || lastPage.result.isLastPage) return;
+      return lastPage.result.page;
+    },
+  });
+
+  const handleClick = (bobId: string, titleLink: string) => {
+    router.push(`/@${bobId}/${titleLink}`);
   };
+
+  const observer = useRef<IntersectionObserver>();
+
+  const fetchTriggerRef = useCallback(
+    (node: HTMLDivElement) => {
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [fetchNextPage, hasNextPage]
+  );
+
+  useEffect(() => {
+    if (!data) return;
+    const moreReviews = data.pages.map((res) => res.result!.reviews).flat();
+
+    setPosts(reviews.concat(moreReviews));
+  }, [data, reviews]);
 
   return (
     <section>
@@ -27,57 +74,55 @@ const PostListContainer = ({ reviews, username, bobId }: Props) => {
           <strong>{username}</strong> 님이 작성한 글
         </span>
         <span> · </span>
-        <span>{reviews?.length} 개</span>
+        <span>{totalReviews} 개</span>
         <span> · </span>
         <span>최신순</span>
       </Header>
-      {reviews
-        ?.slice()
-        .sort((a, b) => b.createdAt - a.createdAt)
-        .map((review) => (
-          <Fragment key={review.id}>
-            <Container>
-              <TextContainer onClick={() => handleClick(`/@${bobId}/${review.titleLink}`)}>
-                <TitleContainer>
-                  {review.type === "식당 리뷰" && (
-                    <RestaurantAddress>
-                      {review.restaurant}
-                      {review.isFavorite && (
-                        <FavoriteTag title={`${username} 님이 선택한 맛집입니다`}>
-                          {" "}
-                          · 맛집 <Check className="material-symbols-outlined">check</Check>
-                        </FavoriteTag>
-                      )}
-                    </RestaurantAddress>
-                  )}
-                  <Title>{review.title}</Title>
-                  <Preview>{review.preview}</Preview>
-                </TitleContainer>
-                <PostInfoContainer>
-                  <span>{formatDate(review.createdAt)}</span>
-                  <span> · </span>
-                  <span>{review.type}</span>
-                  <span> · </span>
-                  <span>{review.likeCount} 개의 추천</span>
-                  <span> · </span>
-                  <span>{review.commentCount} 개의 댓글</span>
-                </PostInfoContainer>
-              </TextContainer>
-              {review.imageUrl ? (
-                <ThumbnailContainer>
-                  <Thumbnail
-                    src={generateResizedUrl(review.imageUrl, "medium")}
-                    alt="preview-image"
-                    width="100px"
-                    height="100px"
-                    objectFit="cover"
-                  />
-                </ThumbnailContainer>
-              ) : null}
-            </Container>
-            <Line marginBot={10} marginTop={10} />
-          </Fragment>
-        ))}
+
+      {posts.map((review, i) => (
+        <Fragment key={review.id}>
+          <Container ref={i === posts.length - 1 ? fetchTriggerRef : null}>
+            <TextContainer onClick={() => handleClick(bobId!, review.titleLink)}>
+              <TitleContainer>
+                {review.type === "식당 리뷰" && (
+                  <RestaurantAddress>
+                    {review.restaurant}
+                    {review.isFavorite && (
+                      <FavoriteTag title={`${username} 님이 선택한 맛집입니다`}>
+                        {" "}
+                        · 맛집 <Check className="material-symbols-outlined">check</Check>
+                      </FavoriteTag>
+                    )}
+                  </RestaurantAddress>
+                )}
+                <Title>{review.title}</Title>
+                <Preview>{review.preview}</Preview>
+              </TitleContainer>
+              <PostInfoContainer>
+                <span>{formatDate(review.createdAt)}</span>
+                <span> · </span>
+                <span>{review.type}</span>
+                <span> · </span>
+                <span>{review.likeCount} 개의 추천</span>
+                <span> · </span>
+                <span>{review.commentCount} 개의 댓글</span>
+              </PostInfoContainer>
+            </TextContainer>
+            {review.imageUrl ? (
+              <ThumbnailContainer>
+                <Thumbnail
+                  src={generateResizedUrl(review.imageUrl, "medium")}
+                  alt="preview-image"
+                  width="100px"
+                  height="100px"
+                  objectFit="cover"
+                />
+              </ThumbnailContainer>
+            ) : null}
+          </Container>
+          <Line marginBot={10} marginTop={10} />
+        </Fragment>
+      ))}
     </section>
   );
 };

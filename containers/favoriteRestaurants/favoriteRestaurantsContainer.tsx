@@ -8,11 +8,11 @@ import SimplePagination from "../../components/pagination/simple";
 import useDeleteFavoriteRestaurant from "../../hooks/queryHooks/useDeleteFavoriteRestaurant";
 import { useVisitedRestaurants } from "../../hooks/queryHooks/useVisitedRestaurants";
 import { Restaurant } from "../../pages/api/users/[id]/visits";
-import { ServerSideProps, WrittenReviews } from "../../pages/[bobId]";
+import { ServerSideProps } from "../../pages/[bobId]";
 import full_heart from "../../public/images/icons/full-heart.svg";
 
 interface Props {
-  writtenReviews: WrittenReviews;
+  writtenReviews: ServerSideProps["reviewPreview"];
   userName: ServerSideProps["profile"]["name"];
   bobId: ServerSideProps["profile"]["bobId"];
   userId: ServerSideProps["profile"]["userId"];
@@ -86,8 +86,8 @@ const FavoriteRestaurantContainer = ({
     router.push(`/posts/review?${queries}`);
   };
 
-  const handleReadReviewClick = (link: string) => () => {
-    router.push(link);
+  const handleReadReviewClick = (bobId: string, titleLink: string) => {
+    router.push(`/@${bobId}/${titleLink}`);
   };
 
   const handleHeartClick = (restaurantId: string, userId: string) => async () => {
@@ -151,7 +151,7 @@ const FavoriteRestaurantContainer = ({
                 </Details>
                 {writtenReview && (
                   <ReadReviewButton
-                    onClick={handleReadReviewClick(`/@${bobId}/${writtenReview.titleLink}`)}
+                    onClick={() => handleReadReviewClick(bobId!, writtenReview.titleLink)}
                   >
                     <span>리뷰: </span>
                     {writtenReview.title}
@@ -238,6 +238,7 @@ const ReadReviewButton = styled.span`
   overflow: hidden;
   margin-top: 10px;
   font-style: italic;
+  font-size: 0.9rem;
   color: ${({ theme }) => theme.text.monochrome_5};
   cursor: pointer;
 

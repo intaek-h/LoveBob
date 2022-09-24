@@ -1,3 +1,4 @@
+import { MyPagePaginationResponse } from "./../pages/api/users/[id]/posts/index";
 import { DefaultResponse } from "./../apis/types";
 import { PresignedUrlResponse } from "./../pages/api/images/presigned-url";
 import axios, { AxiosInstance } from "axios";
@@ -50,6 +51,15 @@ class ReviewService {
     });
     return data;
   };
+
+  public getInfiniteReviews =
+    (userId: string) =>
+    async ({ pageParam = 1 }) => {
+      const { data } = await this.api.get<MyPagePaginationResponse>(
+        `/api/users/${userId}/posts?page=${pageParam}`
+      );
+      return data;
+    };
 }
 
 export default new ReviewService(axios);
