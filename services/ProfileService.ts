@@ -1,3 +1,4 @@
+import { RegionsResponse } from "./../pages/api/regions/all/index";
 import { OnboardResponse } from "../pages/api/users/onboard/index";
 import { VisitedRestaurantResponse } from "../pages/api/users/[id]/visits/index";
 import { Inputs } from "./../components/profile/ProfileChangeForm";
@@ -32,6 +33,7 @@ export interface AddBobIdAndNickNameArgs {
   id: string;
   bobId: string;
   nickname: string;
+  regions: number[];
 }
 
 class ProfileService {
@@ -59,10 +61,15 @@ class ProfileService {
     return data;
   };
 
-  public addBobIdAndNickName = async ({ id, bobId, nickname }: AddBobIdAndNickNameArgs) => {
+  public addBobIdAndNickName = async ({
+    id,
+    bobId,
+    nickname,
+    regions,
+  }: AddBobIdAndNickNameArgs) => {
     const { data } = await this.api.patch<DefaultResponse>(
       "/api/users/onboard",
-      { id, bobId, nickname },
+      { id, bobId, nickname, regions },
       {
         validateStatus: (status) => status === 200 || status === 400,
       }
@@ -115,6 +122,11 @@ class ProfileService {
       `/api/users/${userId}/visits/${restaurantId}`,
       { type: "DELETE" }
     );
+    return data;
+  };
+
+  public getAllRegions = async () => {
+    const { data } = await this.api.get<RegionsResponse>("/api/regions/all");
     return data;
   };
 }

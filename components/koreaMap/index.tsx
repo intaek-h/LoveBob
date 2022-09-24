@@ -9,6 +9,7 @@ import { ServerSideProps } from "../../pages/[bobId]";
 
 interface Props {
   userId: ServerSideProps["profile"]["userId"];
+  regions: ServerSideProps["profile"]["regions"];
 }
 
 interface VisitedRestaurant extends Restaurant {
@@ -30,7 +31,7 @@ function generateRGB() {
   const randomNum1 = Math.floor(Math.random() * (255 - 65 + 1) + 65); // 65 ~ 255
   const randomNum2 = Math.floor(Math.random() * (255 - 65 + 1) + 65); // 65 ~ 255
 
-  return `rgb(255,${randomNum1}, ${randomNum2})`;
+  return `rgb(255, ${randomNum1}, ${randomNum2})`;
 }
 
 const MAP_BACKGROUND_COLOR = "#d4dae1";
@@ -38,7 +39,7 @@ const VISITED_RESTAURANT_MARKER_COLOR = "#f4f4f4";
 const FAVORITE_RESTAURANT_MARKER_COLOR = "#51c5ff";
 const FAVORITE_RESTAURANT_HOVERED_COLOR = "#7decff";
 
-const KoreaMap = ({ userId }: Props) => {
+const KoreaMap = ({ userId, regions }: Props) => {
   const [visitedRestaurants, setVisitedRestaurants] = useState<VisitedRestaurant[]>();
   const [favoriteRestaurants, setFavoriteRestaurants] = useState<VisitedRestaurant[]>();
 
@@ -182,9 +183,24 @@ const KoreaMap = ({ userId }: Props) => {
   return (
     <MapContainer id="chartdiv">
       <DescriptionContainer>
-        <Description>
-          거점: <i>서울 · 제주도</i>
-        </Description>
+        {regions.length >= 2 && (
+          <Description>
+            거점:{" "}
+            <i>
+              {regions[0]} · {regions[1]}
+            </i>
+          </Description>
+        )}
+        {regions.length === 1 && (
+          <Description>
+            거점: <i>{regions[0]}</i>
+          </Description>
+        )}
+        {regions.length === 0 && (
+          <Description>
+            거점: <i>없음</i>
+          </Description>
+        )}
       </DescriptionContainer>
     </MapContainer>
   );
