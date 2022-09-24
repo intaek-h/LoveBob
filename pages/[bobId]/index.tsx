@@ -13,48 +13,42 @@ import InferNextPropsType from "infer-next-props-type";
 import Head from "next/head";
 import FavoriteRestaurantContainer from "../../containers/favoriteRestaurants/favoriteRestaurantsContainer";
 import { Line } from "../../styled-components/etc";
+import { MY_PAGE_REVIEWS_PER_QUERY } from "../../constants/policies";
 
 type Params = {
   bobId: string;
 };
 
-export type WrittenReviews = {
-  id: string;
-  restaurantId: string;
-  titleLink: string;
-  title: string;
-}[];
-
 export const getServerSideProps = async (context: GetServerSidePropsContext<Params>) => {
   const bobId = context.params?.bobId;
   const filteredBobId = bobId?.slice(1);
 
-  const session = await unstable_getServerSession(context.req, context.res, authOptions);
+  const sessionPromise = unstable_getServerSession(context.req, context.res, authOptions);
 
-  const user = await prisma.user.findFirst({
+  const userInfoPromise = prisma.user.findFirst({
+    where: {
+      bobId: filteredBobId,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  const [session, userInfo] = await Promise.all([sessionPromise, userInfoPromise]);
+
+  if (userInfo === null) {
+    return {
+      notFound: true,
+    };
+  }
+
+  const userId = userInfo.id;
+
+  const userPromise = prisma.user.findFirst({
     where: {
       bobId: filteredBobId,
     },
     include: {
-      Reviews: {
-        include: {
-          restaurant: {
-            select: {
-              poi_nm: true,
-              branch_nm: true,
-              sub_nm: true,
-            },
-          },
-          ReviewImages: {
-            select: {
-              urls: true,
-            },
-          },
-          _count: {
-            select: { ReviewComments: true, ReviewLikes: true },
-          },
-        },
-      },
       VisitedRestaurants: {
         include: {
           restaurant: {
@@ -76,6 +70,54 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
       },
     },
   });
+
+  // VisitedRestaurants, FavoriteRestaurants 에 리뷰 링크를 걸기 위한 정보
+  const reviewPreviewPromise = prisma.reviews.findMany({
+    where: {
+      userId,
+    },
+    select: {
+      titleLink: true,
+      title: true,
+      restaurantId: true,
+      id: true,
+    },
+  });
+
+  // Infinite scroll pagination 을 위한 첫 번째 페이지 분량의 리뷰 로딩
+  const reviewsPromise = prisma.reviews.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      restaurant: {
+        select: {
+          poi_nm: true,
+          branch_nm: true,
+          sub_nm: true,
+        },
+      },
+      ReviewImages: {
+        select: {
+          urls: true,
+        },
+      },
+      _count: {
+        select: { ReviewComments: true, ReviewLikes: true },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    skip: 0,
+    take: MY_PAGE_REVIEWS_PER_QUERY,
+  });
+
+  const [user, reviewPreview, reviews] = await Promise.all([
+    userPromise,
+    reviewPreviewPromise,
+    reviewsPromise,
+  ]);
 
   if (user === null) {
     return {
@@ -106,11 +148,11 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     title: user.title,
     description: user.description,
     visits: user.VisitedRestaurants.length,
-    posts: user.Reviews.length,
+    posts: reviews.length,
     regions,
   };
 
-  const filteredReviews = user?.Reviews.map((review, i) => ({
+  const filteredReviews = reviews.map((review, i) => ({
     id: review.id,
     title: review.title,
     titleLink: review.titleLink,
@@ -132,6 +174,11 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
   const props = {
     profile,
     reviews: filteredReviews,
+    reviewPreview,
+    pagination: {
+      isLastPage: reviews.length < MY_PAGE_REVIEWS_PER_QUERY,
+      page: 1,
+    },
   };
 
   return {
@@ -141,14 +188,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
 
 export type ServerSideProps = InferNextPropsType<typeof getServerSideProps>;
 
-const UserPage = ({ profile, reviews }: ServerSideProps) => {
-  const writtenReviews: WrittenReviews = reviews.map((review) => ({
-    id: review.id,
-    restaurantId: review.restaurantId,
-    titleLink: review.titleLink,
-    title: review.title,
-  }));
-
+const UserPage = ({ profile, reviews, reviewPreview, pagination }: ServerSideProps) => {
   const title = `${profile.name} (@${profile.bobId})`;
 
   return (
@@ -176,13 +216,20 @@ const UserPage = ({ profile, reviews }: ServerSideProps) => {
           </>
         )}
         <Line marginTop={20} marginBot={20} />
-        <PostListContainer reviews={reviews} username={profile.name} bobId={profile.bobId} />
+        <PostListContainer
+          reviews={reviews}
+          totalReviews={reviewPreview.length}
+          username={profile.name}
+          bobId={profile.bobId}
+          userId={profile.userId}
+          isLastPage={pagination.isLastPage}
+        />
       </LeftContainer>
       <RightContainer>
         <MapChartContainer userId={profile.userId} regions={profile.regions} />
         <Line marginTop={20} marginBot={20} />
         <FavoriteRestaurantContainer
-          writtenReviews={writtenReviews}
+          writtenReviews={reviewPreview}
           userName={profile.name}
           userId={profile.userId}
           bobId={profile.bobId}
@@ -190,7 +237,7 @@ const UserPage = ({ profile, reviews }: ServerSideProps) => {
         />
         <Line marginTop={20} marginBot={20} />
         <VisitedRestaurantsContainer
-          writtenReviews={writtenReviews}
+          writtenReviews={reviewPreview}
           userName={profile.name}
           userId={profile.userId}
           bobId={profile.bobId}
