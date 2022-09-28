@@ -1,6 +1,8 @@
 import "../public/github-light.css";
 import "react-toastify/dist/ReactToastify.css";
 import "react-loading-skeleton/dist/skeleton.css";
+import "react-image-gallery/styles/css/image-gallery.css";
+import "../public/react-image-gallery-override.css";
 import type { AppProps } from "next/app";
 import Layout from "../components/layouts";
 import { ThemeProvider } from "styled-components";

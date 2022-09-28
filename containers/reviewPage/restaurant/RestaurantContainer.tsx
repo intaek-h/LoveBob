@@ -107,7 +107,7 @@ const Container = styled.section`
   padding: 0 20px;
   height: 100px;
   background-color: #fbfbfb;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
   border-radius: 4px;
 `;
 
@@ -157,7 +157,7 @@ const PercentContainer = styled.div`
 const PercentNum = styled.span`
   font-size: 2rem;
   font-weight: bold;
-  color: ${({ theme }) => theme.text.highlight_blue};
+  color: ${({ theme }) => theme.text.monochrome_4};
 `;
 
 const PercentSign = styled.span`
@@ -168,7 +168,7 @@ const PercentSign = styled.span`
 
 const CoverContainer = styled.div`
   height: 50px;
-  margin-bottom: 110px;
+  margin-bottom: 90px;
 `;
 
 const BlurCover = styled.div`
