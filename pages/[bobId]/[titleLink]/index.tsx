@@ -4,6 +4,11 @@ import prisma from "../../../lib/prisma";
 import InferNextPropsType from "infer-next-props-type";
 import styled from "styled-components";
 import { useRouter } from "next/router";
+import Head from "next/head";
+import HeaderContainer from "../../../containers/reviewPage/header/HeaderContainer";
+import RestaurantContainer from "../../../containers/reviewPage/restaurant/RestaurantContainer";
+import ArticleFooter from "../../../containers/reviewPage/articleFooter";
+import Skeleton from "react-loading-skeleton";
 
 interface Params extends ParsedUrlQuery {
   bobId: string;
@@ -26,10 +31,12 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
       user: {
         select: {
           nickname: true,
+          id: true,
           bobId: true,
           title: true,
           description: true,
           image: true,
+          regions: true,
         },
       },
       restaurant: {
@@ -55,10 +62,43 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     },
   });
 
-  if (!post)
+  if (!post) {
     return {
       notFound: true,
     };
+  }
+
+  let regions: string[] = [];
+
+  if (post.user.regions) {
+    const userRegions = await prisma.regions.findMany({
+      where: {
+        id: {
+          in: post.user.regions?.split(",").map(Number),
+        },
+      },
+    });
+
+    regions = userRegions.map((region) => region.region);
+  }
+
+  const isFavoritePromise = prisma.visitedRestaurants.findFirst({
+    where: {
+      AND: [
+        {
+          userId: post.userId,
+        },
+        {
+          restaurantId: post.restaurantId,
+        },
+      ],
+    },
+    select: {
+      isFavorite: true,
+    },
+  });
+
+  const [isFavorite] = await Promise.all([isFavoritePromise]);
 
   const filteredRestaurant = {
     name: `${post.restaurant.poi_nm} ${post.restaurant.branch_nm} ${post.restaurant.sub_nm}`,
@@ -67,6 +107,7 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     category: post.restaurant.mcate_nm,
     id: post.restaurantId,
     postCount: post.restaurant._count.Reviews,
+    isFavorite: isFavorite?.isFavorite ?? false,
   };
 
   const filteredReviews = {
@@ -81,10 +122,18 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
     type: "식당 리뷰",
   };
 
-  const user = post.user;
+  const filteredUser = {
+    userId: post.user.id,
+    name: post.user.nickname,
+    image: post.user.image,
+    bobId: post.user.bobId,
+    title: post.user.title,
+    description: post.user.description,
+    regions,
+  };
 
   const props = {
-    user,
+    user: filteredUser,
     review: filteredReviews,
     restaurant: filteredRestaurant,
   };
@@ -101,20 +150,73 @@ const PostPage = ({ restaurant, review, user }: PostPageStaticProps) => {
 
   if (router.isFallback)
     return (
-      <div>
-        <span>스켈레톤 올 자리</span>
-      </div>
+      <Body>
+        <LeftContainer>
+          <Skeleton height={900} />
+        </LeftContainer>
+        <RightContainer>
+          <Skeleton height={400} style={{ marginBottom: 50 }} />
+          <Skeleton height={400} />
+        </RightContainer>
+      </Body>
     );
 
   return (
-    <div>
-      <Article className="markdown-body" dangerouslySetInnerHTML={{ __html: review.content }} />
-    </div>
+    <>
+      <Head>
+        <title>{review.title}</title>
+      </Head>
+      <Body>
+        <LeftContainer>
+          <article aria-label="restaurant-review-article">
+            <HeaderContainer
+              createdAt={review.createdAt}
+              restaurantName={restaurant.name}
+              reviewId={review.id}
+              nickname={user.name!}
+              postType={review.type}
+              title={review.title}
+              contentLength={review.content.length}
+              profileImage={user.image}
+              isFavorite={restaurant.isFavorite}
+            />
+            <RestaurantContainer
+              bobId={user.bobId}
+              restaurantId={restaurant.id}
+              restaurantName={restaurant.name}
+              city={restaurant.city}
+              roadAddress={restaurant.roadAddress}
+            />
+            <Article
+              className="markdown-body"
+              dangerouslySetInnerHTML={{ __html: review.content }}
+            />
+            <ArticleFooter reviewId={review.id} nickname={user.name} regions={user.regions} />
+          </article>
+        </LeftContainer>
+        <RightContainer></RightContainer>
+      </Body>
+    </>
   );
 };
 
+const Body = styled.div`
+  display: flex;
+  justify-content: space-around;
+  margin-top: 90px;
+`;
+
+const LeftContainer = styled.section`
+  width: 700px;
+`;
+
+const RightContainer = styled.aside`
+  width: 450px;
+`;
+
 const Article = styled.article`
   width: 700px;
+  padding: 0;
 `;
 
 export default PostPage;

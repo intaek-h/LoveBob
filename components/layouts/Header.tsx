@@ -19,7 +19,14 @@ const Header = () => {
       <Container>
         <Image src={logo} alt="logo" onClick={() => router.push("/")} />
         <button onClick={() => signOut()}>log out</button>
-        <ProfileIcon onClick={() => router.push(`/@${session.user.bobId}`)} />
+        <ProfileIcon
+          src={session.user.image!}
+          width={32}
+          height={32}
+          alt="profile-image"
+          style={{ borderRadius: "50%" }}
+          onClick={() => router.push(`/@${session.user.bobId}`)}
+        />
       </Container>
     );
 
@@ -28,7 +35,7 @@ const Header = () => {
       <>
         <Container>
           <Image src={logo} alt="logo" onClick={() => router.push("/")} />
-          <ProfileIcon />
+          <MockProfileIcon />
         </Container>
         <Modal show={isModalOpen}>
           <OnboardForm closeModal={() => setIsModalOpen(false)} />
@@ -44,7 +51,7 @@ const Header = () => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.header`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -64,7 +71,15 @@ const LoginButton = styled.button`
   }
 `;
 
-const ProfileIcon = styled.button`
+const ProfileIcon = styled(Image)`
+  width: 32px;
+  height: 32px;
+  background-color: ${({ theme }) => theme.element.placeholder};
+  border-radius: 50%;
+  cursor: pointer;
+`;
+
+const MockProfileIcon = styled.button`
   appearance: none;
   border: none;
   background: none;

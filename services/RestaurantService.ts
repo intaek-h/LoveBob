@@ -1,3 +1,5 @@
+import { ReviewCountResponse } from "./../pages/api/restaurants/[restaurantId]/review-count/index";
+import { VisitStatsResponse } from "./../pages/api/restaurants/[restaurantId]/visit-stats/index";
 import axios, { AxiosInstance } from "axios";
 
 export interface RestaurantsResponse {
@@ -27,6 +29,20 @@ class RestaurantService {
 
   public getNearbyRestaurants = async ({ x, y }: NearbyRestaurantsArgs) => {
     const { data } = await this.api.get<RestaurantsResponse>(`/api/restaurants?x=${x}&y=${y}`);
+    return data;
+  };
+
+  public getVisitStats = async (restaurantId: string) => {
+    const { data } = await this.api.get<VisitStatsResponse>(
+      `/api/restaurants/${restaurantId}/visit-stats`
+    );
+    return data;
+  };
+
+  public getReviewCount = async (restaurantId: string) => {
+    const { data } = await this.api.get<ReviewCountResponse>(
+      `/api/restaurants/${restaurantId}/review-count`
+    );
     return data;
   };
 }

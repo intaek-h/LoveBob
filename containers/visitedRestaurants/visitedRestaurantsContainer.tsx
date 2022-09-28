@@ -9,16 +9,16 @@ import useAddFavoriteRestaurant from "../../hooks/queryHooks/useAddFavoriteResta
 import useDeleteFavoriteRestaurant from "../../hooks/queryHooks/useDeleteFavoriteRestaurant";
 import { useVisitedRestaurants } from "../../hooks/queryHooks/useVisitedRestaurants";
 import { Restaurant } from "../../pages/api/users/[id]/visits";
-import { ServerSideProps } from "../../pages/[bobId]";
+import { ProfilePageProps } from "../../pages/[bobId]";
 import empty_heart from "../../public/images/icons/empty-heart.svg";
 import full_heart from "../../public/images/icons/full-heart.svg";
 
 interface Props {
-  writtenReviews: ServerSideProps["reviewPreview"];
-  userName: ServerSideProps["profile"]["name"];
-  bobId: ServerSideProps["profile"]["bobId"];
-  userId: ServerSideProps["profile"]["userId"];
-  isOwner: ServerSideProps["profile"]["isOwner"];
+  writtenReviews: ProfilePageProps["reviewPreview"];
+  userName: ProfilePageProps["profile"]["name"];
+  bobId: ProfilePageProps["profile"]["bobId"];
+  userId: ProfilePageProps["profile"]["userId"];
+  isOwner: ProfilePageProps["profile"]["isOwner"];
 }
 
 const RESTAURANT_LIMIT = 6;

@@ -23,6 +23,13 @@ const GlobalStyle = createGlobalStyle`
   * {
     box-sizing: border-box;
   }
+
+  ::-moz-selection {
+    background: ${({ theme }) => theme.text.drag};
+  }
+  ::selection {
+    background: ${({ theme }) => theme.text.drag};    
+  }
 `;
 
 export default GlobalStyle;

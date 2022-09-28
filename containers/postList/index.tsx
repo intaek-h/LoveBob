@@ -4,19 +4,19 @@ import { useRouter } from "next/router";
 import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import useInfiniteReviews from "../../hooks/queryHooks/useInfiniteReviews";
-import { ServerSideProps } from "../../pages/[bobId]";
+import { ProfilePageProps } from "../../pages/[bobId]";
 import ReviewService from "../../services/ReviewService";
 import { Line } from "../../styled-components/etc";
 import { formatDate } from "../../utils/formatDate";
 import { generateResizedUrl } from "../../utils/generateResizedUrl";
 
 interface Props {
-  reviews: ServerSideProps["reviews"];
+  reviews: ProfilePageProps["reviews"];
   totalReviews: number;
-  username: ServerSideProps["profile"]["name"];
-  bobId: ServerSideProps["profile"]["bobId"];
-  userId: ServerSideProps["profile"]["userId"];
-  isLastPage: ServerSideProps["pagination"]["isLastPage"];
+  username: ProfilePageProps["profile"]["name"];
+  bobId: ProfilePageProps["profile"]["bobId"];
+  userId: ProfilePageProps["profile"]["userId"];
+  isLastPage: ProfilePageProps["pagination"]["isLastPage"];
 }
 
 const PostListContainer = ({
