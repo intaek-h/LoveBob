@@ -84,7 +84,7 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
     },
   });
 
-  // Infinite scroll pagination 을 위한 첫 번째 페이지 분량의 리뷰 로딩
+  // Infinite scroll pagination 을 위한 첫 번째 페이지 분량의 리뷰 로드
   const reviewsPromise = prisma.reviews.findMany({
     where: {
       userId,
@@ -186,9 +186,9 @@ export const getServerSideProps = async (context: GetServerSidePropsContext<Para
   };
 };
 
-export type ServerSideProps = InferNextPropsType<typeof getServerSideProps>;
+export type ProfilePageProps = InferNextPropsType<typeof getServerSideProps>;
 
-const UserPage = ({ profile, reviews, reviewPreview, pagination }: ServerSideProps) => {
+const UserPage = ({ profile, reviews, reviewPreview, pagination }: ProfilePageProps) => {
   const title = `${profile.name} (@${profile.bobId})`;
 
   return (
@@ -254,11 +254,11 @@ const Body = styled.div`
   margin-top: 90px;
 `;
 
-const LeftContainer = styled.div`
+const LeftContainer = styled.section`
   width: 700px;
 `;
 
-const RightContainer = styled.div`
+const RightContainer = styled.aside`
   width: 450px;
 `;
 

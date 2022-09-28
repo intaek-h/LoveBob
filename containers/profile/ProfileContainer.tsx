@@ -4,9 +4,9 @@ import styled from "styled-components";
 import Modal from "../../components/modal";
 import ProfileEditor from "../../components/profile/ProfileEditor";
 import { useSession } from "../../hooks/queryHooks/useSession";
-import type { ServerSideProps } from "../../pages/[bobId]";
+import type { ProfilePageProps } from "../../pages/[bobId]";
 
-type Props = ServerSideProps["profile"];
+type Props = ProfilePageProps["profile"];
 
 const ProfileContainer = ({
   isOwner,

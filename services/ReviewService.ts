@@ -1,3 +1,5 @@
+import { MyReviewVoteResponse } from "./../pages/api/posts/reviews/[reviewId]/my-vote/index";
+import { ReviewCountResponse } from "./../pages/api/restaurants/[restaurantId]/review-count/index";
 import { MyPagePaginationResponse } from "./../pages/api/users/[id]/posts/index";
 import { DefaultResponse } from "./../apis/types";
 import { PresignedUrlResponse } from "./../pages/api/images/presigned-url";
@@ -11,6 +13,11 @@ export interface UploadReviewArgs {
   images: string[];
   userId: string;
   restaurantId: string;
+}
+
+export interface UpvoteReivewArgs {
+  userId: string;
+  reviewId: string;
 }
 
 class ReviewService {
@@ -60,6 +67,39 @@ class ReviewService {
       );
       return data;
     };
+
+  public getReviewVotes = async (reviewId: string) => {
+    const { data } = await this.api.get<ReviewCountResponse>(
+      `/api/posts/reviews/${reviewId}/votes`
+    );
+    return data;
+  };
+
+  public upvoteReview = async ({ userId, reviewId }: UpvoteReivewArgs) => {
+    const { data } = await this.api.patch<DefaultResponse>(`/api/posts/reviews/${reviewId}/votes`, {
+      type: "UPVOTE",
+      userId,
+    });
+    return data;
+  };
+
+  public cancelReviewUpvote = async ({ userId, reviewId }: UpvoteReivewArgs) => {
+    const { data } = await this.api.patch<DefaultResponse>(`/api/posts/reviews/${reviewId}/votes`, {
+      type: "CANCEL_UPVOTE",
+      userId,
+    });
+    return data;
+  };
+
+  public checkIfIVoted = async ({ userId, reviewId }: UpvoteReivewArgs) => {
+    const { data } = await this.api.post<MyReviewVoteResponse>(
+      `/api/posts/reviews/${reviewId}/my-vote`,
+      {
+        userId,
+      }
+    );
+    return data;
+  };
 }
 
 export default new ReviewService(axios);

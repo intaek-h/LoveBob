@@ -1,6 +1,7 @@
 export const lightTheme = {
   text: {
     default: "#000000",
+    drag: "rgb(14 160 55 / 15%)",
     highlight_green: "#2A6E00",
     highlight_blue: "#1A73E8",
     error_red: "#e92c2c",
@@ -27,6 +28,7 @@ export const lightTheme = {
     green_prism_3: "#0ea100",
     green_prism_4: "#2da44e",
     blue_prism_1: "#ecf9ff",
+    blue_prism_3: "#347fff",
     blue_prism_4: "#004fd2",
   },
 };

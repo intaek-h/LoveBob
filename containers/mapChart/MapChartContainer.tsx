@@ -1,10 +1,10 @@
 import styled from "styled-components";
 import dynamic from "next/dynamic";
-import { ServerSideProps } from "../../pages/[bobId]";
+import { ProfilePageProps } from "../../pages/[bobId]";
 
 interface Props {
-  userId: ServerSideProps["profile"]["userId"];
-  regions: ServerSideProps["profile"]["regions"];
+  userId: ProfilePageProps["profile"]["userId"];
+  regions: ProfilePageProps["profile"]["regions"];
 }
 
 const KoreaMap = dynamic(() => import("../../components/koreaMap"), { ssr: false });

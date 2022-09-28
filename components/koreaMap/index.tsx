@@ -5,11 +5,11 @@ import { useLayoutEffect, useState } from "react";
 import styled from "styled-components";
 import { Restaurant } from "../../pages/api/users/[id]/visits";
 import { useVisitedRestaurants } from "../../hooks/queryHooks/useVisitedRestaurants";
-import { ServerSideProps } from "../../pages/[bobId]";
+import { ProfilePageProps } from "../../pages/[bobId]";
 
 interface Props {
-  userId: ServerSideProps["profile"]["userId"];
-  regions: ServerSideProps["profile"]["regions"];
+  userId: ProfilePageProps["profile"]["userId"];
+  regions: ProfilePageProps["profile"]["regions"];
 }
 
 interface VisitedRestaurant extends Restaurant {
@@ -181,7 +181,7 @@ const KoreaMap = ({ userId, regions }: Props) => {
   }, [favoriteRestaurants, visitedRestaurants]);
 
   return (
-    <MapContainer id="chartdiv">
+    <MapContainer id="chartdiv" aria-label="Korea Map">
       <DescriptionContainer>
         {regions.length >= 2 && (
           <Description>
