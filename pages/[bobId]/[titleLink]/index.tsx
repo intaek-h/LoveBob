@@ -9,6 +9,9 @@ import HeaderContainer from "../../../containers/reviewPage/header/HeaderContain
 import RestaurantContainer from "../../../containers/reviewPage/restaurant/RestaurantContainer";
 import ArticleFooter from "../../../containers/reviewPage/articleFooter";
 import Skeleton from "react-loading-skeleton";
+// import GalleryContainer from "../../../containers/reviewPage/imageCarousel/GalleryContainer";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
 
 interface Params extends ParsedUrlQuery {
   bobId: string;
@@ -145,6 +148,13 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
 
 export type PostPageStaticProps = InferNextPropsType<typeof getStaticProps>;
 
+const GalleryContainer = dynamic(
+  () => import("../../../containers/reviewPage/imageCarousel/GalleryContainer"),
+  {
+    suspense: true,
+  }
+);
+
 const PostPage = ({ restaurant, review, user }: PostPageStaticProps) => {
   const router = useRouter();
 
@@ -187,6 +197,11 @@ const PostPage = ({ restaurant, review, user }: PostPageStaticProps) => {
               city={restaurant.city}
               roadAddress={restaurant.roadAddress}
             />
+            {review.imageUrl[0] !== "" && (
+              <Suspense fallback={<Skeleton height={400} />}>
+                <GalleryContainer urls={review.imageUrl} />
+              </Suspense>
+            )}
             <Article
               className="markdown-body"
               dangerouslySetInnerHTML={{ __html: review.content }}

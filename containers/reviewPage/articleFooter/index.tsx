@@ -1,5 +1,6 @@
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
+import { toast } from "react-toastify";
 import styled from "styled-components";
 import useCancelReviewUpvote from "../../../hooks/queryHooks/useCancelReviewUpvote";
 import useCheckMyReviewVote from "../../../hooks/queryHooks/useCheckMyReviewVote";
@@ -21,6 +22,9 @@ const ArticleFooter = ({ nickname, regions, reviewId }: Props) => {
   const [isVoted, setIsVoted] = useState(false);
 
   const { mutate: upvote } = useUpvoteReviews({
+    onSuccess: (res) => {
+      if (res.success) toastUpvoteSuccess();
+    },
     onSettled: () => {
       queryClient.invalidateQueries(["review-vote-count", reviewId]);
       queryClient.invalidateQueries(["my-review-vote", reviewId]);
@@ -28,11 +32,28 @@ const ArticleFooter = ({ nickname, regions, reviewId }: Props) => {
   });
 
   const { mutate: cancelVote } = useCancelReviewUpvote({
+    onSuccess: (res) => {
+      if (res.success) toastUpvoteCancelSuccess();
+    },
     onSettled: () => {
       queryClient.invalidateQueries(["review-vote-count", reviewId]);
       queryClient.invalidateQueries(["my-review-vote", reviewId]);
     },
   });
+
+  const toastUpvoteSuccess = () => {
+    toast("리뷰를 추천했어요!", {
+      toastId: "review-upvote-success",
+      type: "success",
+    });
+  };
+
+  const toastUpvoteCancelSuccess = () => {
+    toast("추천을 취소했어요", {
+      toastId: "review-upvote-cancel",
+      type: "success",
+    });
+  };
 
   useCheckMyReviewVote(session?.user.id, reviewId, {
     enabled: !!session,
