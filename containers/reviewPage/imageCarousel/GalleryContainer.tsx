@@ -1,6 +1,6 @@
 import type { ReactImageGalleryItem } from "react-image-gallery";
 import styled from "styled-components";
-import ImageCarousel from "../../../components/ImageCarousel";
+import ImageCarousel from "../../../components/imageCarousel";
 import { PostPageStaticProps } from "../../../pages/[bobId]/[titleLink]";
 
 interface Props {
@@ -24,7 +24,7 @@ const GalleryContainer = ({ urls }: Props) => {
 
 const Container = styled.div`
   height: ${IMAGE_HEIGHT}px;
-  margin-bottom: 40px;
+  margin-bottom: 80px;
 `;
 
 export default GalleryContainer;

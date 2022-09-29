@@ -20,6 +20,12 @@ export interface UpvoteReivewArgs {
   reviewId: string;
 }
 
+export interface GetRecentReviewsOfUserArgs {
+  userId: string;
+  take: number;
+  reviewId: string;
+}
+
 class ReviewService {
   constructor(private api: AxiosInstance) {}
 
@@ -97,6 +103,17 @@ class ReviewService {
       {
         userId,
       }
+    );
+    return data;
+  };
+
+  public getRecentReviewsOfUser = async ({
+    userId,
+    take,
+    reviewId,
+  }: GetRecentReviewsOfUserArgs) => {
+    const { data } = await this.api.get(
+      `/api/users/${userId}/posts/more?take=${take}&skip=${reviewId}`
     );
     return data;
   };

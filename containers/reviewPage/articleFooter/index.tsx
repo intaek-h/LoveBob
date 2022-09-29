@@ -10,12 +10,13 @@ import { PostPageStaticProps } from "../../../pages/[bobId]/[titleLink]";
 import { Line } from "../../../styled-components/etc";
 
 interface Props {
+  userId: PostPageStaticProps["user"]["userId"];
   nickname: PostPageStaticProps["user"]["name"];
   reviewId: PostPageStaticProps["review"]["id"];
   regions: string[];
 }
 
-const ArticleFooter = ({ nickname, regions, reviewId }: Props) => {
+const ArticleFooter = ({ nickname, regions, reviewId, userId }: Props) => {
   const queryClient = useQueryClient();
 
   const [session] = useSession();
@@ -55,6 +56,27 @@ const ArticleFooter = ({ nickname, regions, reviewId }: Props) => {
     });
   };
 
+  const toastDisallowSelfUpvote = () => {
+    toast("본인 글을 추천할 수 없습니다", {
+      toastId: "cannot-upvote-my-review",
+      type: "error",
+    });
+  };
+
+  const handleUpvote = () => {
+    if (userId === session.user.id) {
+      return toastDisallowSelfUpvote();
+    }
+
+    upvote({ userId: session.user.id, reviewId });
+  };
+
+  const handleCancelUpvote = () => {
+    if (userId === session.user.id) return;
+
+    cancelVote({ userId: session.user.id, reviewId });
+  };
+
   useCheckMyReviewVote(session?.user.id, reviewId, {
     enabled: !!session,
     onSettled: (data) => {
@@ -67,11 +89,11 @@ const ArticleFooter = ({ nickname, regions, reviewId }: Props) => {
     <Container>
       {session &&
         (isVoted ? (
-          <CancelVoteButton onClick={() => cancelVote({ userId: session.user.id, reviewId })}>
+          <CancelVoteButton onClick={handleCancelUpvote}>
             이 글을 <strong>추천했습니다</strong>
           </CancelVoteButton>
         ) : (
-          <UpvoteButton onClick={() => upvote({ userId: session.user.id, reviewId })}>
+          <UpvoteButton onClick={handleUpvote}>
             이 글을 <strong>추천합니다</strong>
           </UpvoteButton>
         ))}
@@ -94,8 +116,8 @@ const Container = styled.footer`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 150px;
-  height: 150px;
+  margin-top: 130px;
+  height: 200px;
 `;
 
 const UpvoteButton = styled.button`

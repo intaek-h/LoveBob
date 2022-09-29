@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import styled from "styled-components";
 import useRestaurantReviewCount from "../../../hooks/queryHooks/useRestaurantReviewCount";
@@ -56,6 +56,10 @@ const RestaurantContainer = ({ bobId, restaurantId, restaurantName, city, roadAd
       setReviewCount(data.result);
     },
   });
+
+  useEffect(() => {
+    setIsBlurred(true);
+  }, [restaurantId]);
 
   if (isBlurred)
     return (
@@ -124,6 +128,7 @@ const Restaurant = styled.span`
   padding-left: 8px;
   border-left: 5px solid ${({ theme }) => theme.text.highlight_blue};
   margin-bottom: 5px;
+  color: ${({ theme }) => theme.text.monochrome_4};
 `;
 
 const AddressContainer = styled.div`

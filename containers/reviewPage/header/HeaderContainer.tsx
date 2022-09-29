@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import styled from "styled-components";
 import useReviewVoteCount from "../../../hooks/queryHooks/useReviewVoteCount";
@@ -15,6 +16,7 @@ interface Props {
   profileImage: PostPageStaticProps["user"]["image"];
   reviewId: PostPageStaticProps["review"]["id"];
   isFavorite: PostPageStaticProps["restaurant"]["isFavorite"];
+  bobId: PostPageStaticProps["user"]["bobId"];
   contentLength: number;
 }
 
@@ -28,6 +30,7 @@ const HeaderContainer = ({
   isFavorite,
   reviewId,
   restaurantName,
+  bobId,
 }: Props) => {
   const date = new Date(createdAt);
   const year = date.getFullYear();
@@ -35,8 +38,13 @@ const HeaderContainer = ({
   const contentDescription = contentLength > 500 ? "자세한 글" : "짧은 글";
 
   const favoriteTagRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
 
   const [voteCount, setVoteCount] = useState(0);
+
+  const handleProfileClick = () => {
+    router.push(`/@${bobId}`);
+  };
 
   useToolTip(favoriteTagRef, {
     placement: "bottom",
@@ -57,7 +65,7 @@ const HeaderContainer = ({
     <Container>
       <HeadContainer>
         <ProfileContainer>
-          <ProfileImage>
+          <ProfileImage onClick={handleProfileClick}>
             <Image
               src={generateResizedUrl(profileImage!, "small")}
               width={30}
@@ -66,7 +74,8 @@ const HeaderContainer = ({
             />
           </ProfileImage>
           <Description>
-            <strong>{nickname}</strong> 님의 <strong>{postType}</strong>
+            <strong onClick={handleProfileClick}>{nickname}</strong> 님의{" "}
+            <strong>{postType}</strong>
           </Description>
         </ProfileContainer>
         {isFavorite && (
@@ -114,6 +123,7 @@ const ProfileImage = styled.div`
   border-radius: 50%;
   margin-right: 10px;
   overflow: hidden;
+  cursor: pointer;
 `;
 
 const FavoriteTag = styled.div`
@@ -136,6 +146,10 @@ const Check = styled.span`
 const Description = styled.span`
   font-size: 0.9rem;
   color: ${({ theme }) => theme.text.monochrome_4};
+
+  strong {
+    cursor: pointer;
+  }
 `;
 
 const Title = styled.h1`

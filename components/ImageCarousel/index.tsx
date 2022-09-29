@@ -54,6 +54,7 @@ const NavLeftIcon = styled.button`
   &:hover {
     div {
       backdrop-filter: contrast(0.9);
+      transition: 0.3s ease;
     }
   }
 `;
@@ -75,6 +76,7 @@ const NavRightButton = styled.button`
   &:hover {
     div {
       backdrop-filter: contrast(0.9);
+      transition: 0.3s ease;
     }
   }
 `;
