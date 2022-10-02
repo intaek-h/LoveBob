@@ -215,7 +215,7 @@ const UserPage = ({ profile, reviews, reviewPreview, pagination }: ProfilePagePr
             </CustomizedAccordions>
           </>
         )}
-        <Line marginTop={20} marginBot={20} />
+        <Line marginTop={20} marginBot={40} />
         <PostListContainer
           reviews={reviews}
           totalReviews={reviewPreview.length}

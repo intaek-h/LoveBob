@@ -101,12 +101,12 @@ const ArticleFooter = ({ nickname, regions, reviewId, userId }: Props) => {
         <Line marginTop={50} marginBot={20} />
       </LineWrapper>
       <Suggestion>{nickname} 님의 다른 글도 읽어보세요</Suggestion>
-      {regions.length && (
+      {regions.length ? (
         <Regions>
           <strong>{nickname}</strong> 님은 <strong>{regions.join(" · ")}</strong> 를 거점으로 하는
           작가입니다
         </Regions>
-      )}
+      ) : null}
     </Container>
   );
 };

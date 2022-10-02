@@ -1,9 +1,8 @@
 .image-gallery-index {
-  backdrop-filter: contrast(0.95);
-  background-color: transparent;
+  background: rgb(0 0 0 / 60%);
   padding: 5px 20px;
 }
 
 .image-gallery-index > span {
-  color: #afafaf;
+  color: #e8e8e8;
 }

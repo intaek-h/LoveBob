@@ -90,8 +90,8 @@ const PostListContainer = ({
 };
 
 const Header = styled.header`
-  padding: 10px 0 20px 10px;
-  margin-bottom: 10px;
+  padding: 10px 0 0px 10px;
+  margin-bottom: 20px;
 
   & :nth-child(5) {
     color: ${({ theme }) => theme.text.monochrome_4};

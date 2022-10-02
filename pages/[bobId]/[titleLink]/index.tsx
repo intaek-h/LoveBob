@@ -11,6 +11,8 @@ import ArticleFooter from "../../../containers/reviewPage/articleFooter";
 import Skeleton from "react-loading-skeleton";
 import GalleryContainer from "../../../containers/reviewPage/imageCarousel/GalleryContainer";
 import MoreArticles from "../../../containers/reviewPage/moreArticles";
+import RelatedArticles from "../../../containers/reviewPage/relatedArticles";
+import NearbyRestaurants from "../../../containers/reviewPage/nearbyRestaurants";
 
 interface Params extends ParsedUrlQuery {
   bobId: string;
@@ -204,7 +206,14 @@ const PostPage = ({ restaurant, review, user }: PostPageStaticProps) => {
           </article>
           <MoreArticles userId={user.userId} reviewId={review.id} bobId={user.bobId} />
         </LeftContainer>
-        <RightContainer></RightContainer>
+        <RightContainer>
+          <RelatedArticles
+            restaurantId={restaurant.id}
+            restaurantName={restaurant.name}
+            reviewId={review.id}
+          />
+          <NearbyRestaurants restaurantId={restaurant.id} restaurantName={restaurant.name} />
+        </RightContainer>
       </Body>
     </>
   );
@@ -221,12 +230,16 @@ const LeftContainer = styled.section`
 `;
 
 const RightContainer = styled.aside`
-  width: 450px;
+  position: -webkit-sticky;
+  position: sticky;
+  align-self: flex-start;
+  top: 50px;
+  width: 400px;
 `;
 
 const Article = styled.article`
   width: 700px;
-  padding: 0;
+  padding: 0 10px;
 `;
 
 export default PostPage;

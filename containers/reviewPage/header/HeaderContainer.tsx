@@ -76,6 +76,7 @@ const HeaderContainer = ({
           <Description>
             <strong onClick={handleProfileClick}>{nickname}</strong> 님의{" "}
             <strong>{postType}</strong>
+            {isFavorite && <span> · </span>}
           </Description>
         </ProfileContainer>
         {isFavorite && (
@@ -109,7 +110,7 @@ const Container = styled.header`
 
 const HeadContainer = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
 `;
 
 const ProfileContainer = styled.div`
@@ -131,7 +132,7 @@ const FavoriteTag = styled.div`
   display: flex;
   align-items: center;
   font-size: 0.9rem;
-  padding: 3px 10px;
+  padding: 3px 6px;
   color: ${({ theme }) => theme.text.highlight_blue};
   font-weight: 500;
 `;
@@ -148,7 +149,12 @@ const Description = styled.span`
   color: ${({ theme }) => theme.text.monochrome_4};
 
   strong {
-    cursor: pointer;
+    font-weight: 500;
+    color: ${({ theme }) => theme.text.monochrome_5};
+
+    &:first-child {
+      cursor: pointer;
+    }
   }
 `;
 
@@ -164,6 +170,12 @@ const Info = styled.div`
   & > span {
     font-size: 0.9rem;
     color: ${({ theme }) => theme.text.monochrome_4};
+  }
+
+  span {
+    &:nth-child(4) {
+      font-weight: bold;
+    }
   }
 `;
 

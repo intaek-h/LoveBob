@@ -1,3 +1,4 @@
+import { TopReviewsResponse } from "./../pages/api/restaurants/[restaurantId]/top-reviews/index";
 import { MyReviewVoteResponse } from "./../pages/api/posts/reviews/[reviewId]/my-vote/index";
 import { ReviewCountResponse } from "./../pages/api/restaurants/[restaurantId]/review-count/index";
 import { MyPagePaginationResponse } from "./../pages/api/users/[id]/posts/index";
@@ -114,6 +115,13 @@ class ReviewService {
   }: GetRecentReviewsOfUserArgs) => {
     const { data } = await this.api.get(
       `/api/users/${userId}/posts/more?take=${take}&skip=${reviewId}`
+    );
+    return data;
+  };
+
+  public getTopReviewsOfRestaurant = async (restaurantId: string, reviewId: string) => {
+    const { data } = await this.api.get<TopReviewsResponse>(
+      `/api/restaurants/${restaurantId}/top-reviews?take=3&skip=${reviewId}`
     );
     return data;
   };
