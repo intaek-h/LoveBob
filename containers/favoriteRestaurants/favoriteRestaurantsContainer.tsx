@@ -208,7 +208,7 @@ const Guide = styled.span`
 const Title = styled.div`
   display: flex;
   justify-content: space-between;
-  margin-bottom: 15px;
+  margin-bottom: 12px;
 `;
 
 const Name = styled.span`
@@ -219,6 +219,7 @@ const Name = styled.span`
 
 const PostCount = styled.span`
   color: ${({ theme }) => theme.text.monochrome_4};
+  font-size: 0.9rem;
 `;
 
 const WriteButton = styled.button`
@@ -258,12 +259,14 @@ const Details = styled.div`
 `;
 
 const City = styled.span`
-  color: ${({ theme }) => theme.text.highlight_green};
+  color: ${({ theme }) => theme.text.monochrome_4};
   margin-right: 6px;
+  font-size: 0.9rem;
 `;
 
 const Road = styled.span`
   color: ${({ theme }) => theme.text.monochrome_4};
+  font-size: 0.9rem;
 `;
 
 const HeartContainer = styled.div<HeartContainerProps>`

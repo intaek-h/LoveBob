@@ -62,7 +62,7 @@ const UploadButton = ({ restaurantId }: Props) => {
 
     editor.update(() => {
       payload.content = $generateHtmlFromNodes(editor, null);
-      payload.preview = $getRoot().getTextContent().substring(0, 100);
+      payload.preview = $getRoot().getTextContent().substring(0, 200);
     });
 
     if (!sanitizeHtml(payload.content)) {

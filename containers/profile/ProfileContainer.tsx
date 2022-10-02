@@ -37,6 +37,11 @@ const ProfileContainer = ({
           <BoldContent>{visits}</BoldContent>
           <div>
             <Title>{title}</Title>
+            {description && (
+              <DescriptionContainer>
+                <p>{`"${description}"`}</p>
+              </DescriptionContainer>
+            )}
           </div>
         </ProfileTextContainer>
         {isOwner && session && (
@@ -48,11 +53,6 @@ const ProfileContainer = ({
           </>
         )}
       </Container>
-      {description && (
-        <DescriptionContainer>
-          <p>{`"${description}"`}</p>
-        </DescriptionContainer>
-      )}
     </>
   );
 };
@@ -123,9 +123,8 @@ const DescriptionContainer = styled.div`
   align-items: center;
   height: 40px;
   border-radius: 3px;
-  padding-left: 10px;
   font-style: italic;
-  background-color: ${({ theme }) => theme.element.green_prism_1};
+  font-size: 0.9rem;
   color: ${({ theme }) => theme.text.monochrome_4};
 
   & > p {

@@ -19,10 +19,12 @@ const GeneralReviewContainer = ({ review, handleClick }: Props, ref: Ref<HTMLDiv
             <RestaurantAddress>
               {review.restaurant}
               {review.isFavorite && (
-                <FavoriteTag title={`작성자가 선택한 맛집입니다`}>
-                  {" "}
-                  · 맛집 <Check className="material-symbols-outlined">check</Check>
-                </FavoriteTag>
+                <>
+                  <span> · </span>
+                  <FavoriteTag title="작성자가 선택한 맛집입니다">
+                    맛집 <Check className="material-symbols-outlined">check</Check>
+                  </FavoriteTag>
+                </>
               )}
             </RestaurantAddress>
           )}
@@ -76,7 +78,7 @@ const TitleContainer = styled.div`
 const RestaurantAddress = styled.span`
   display: block;
   font-size: 0.8rem;
-  color: ${({ theme }) => theme.text.highlight_green};
+  color: ${({ theme }) => theme.text.monochrome_4};
   margin-bottom: 4px;
 `;
 
@@ -93,22 +95,23 @@ const Check = styled.span`
 const Title = styled.span`
   font-size: 1.1rem;
   font-weight: bold;
-  margin-bottom: 6px;
+  margin-bottom: 12px;
 `;
 
 const Preview = styled.span`
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: ${({ theme }) => theme.text.monochrome_5};
+  color: ${({ theme }) => theme.text.monochrome_4};
   margin-bottom: 10px;
   font-size: 0.9rem;
+  line-height: 1.6;
 `;
 
 const PostInfoContainer = styled.div`
   & > span {
-    color: ${({ theme }) => theme.text.monochrome_5};
+    color: ${({ theme }) => theme.text.monochrome_4};
     font-weight: 400;
     font-size: 0.9rem;
   }
